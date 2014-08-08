@@ -22,12 +22,12 @@
     <platform name="android">
         
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Echo"> 
+            <feature name="UpdateToVersion"> 
                 <param name="android-package" value="org.apache.cordova.plugin.updateToVersion"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/updateToVersion.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/UpdateToVersion.java" target-dir="src/org/apache/cordova/plugin" />
     </platform>
 </plugin>
 
