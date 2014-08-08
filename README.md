@@ -1,22 +1,14 @@
-cordova-update-www
-==================
+Steroids Echo plugin
+====================
 
-Replace content of "WWW" folder at the Cordova project
+Sample Echo plugin for Steroids.js. Compatible with Cordova and [plugman](https://github.com/apache/cordova-plugman). Built upon the [Cordova Echo plugin example](http://cordova.apache.org/docs/en/3.0.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide).
 
-==================
+##Usage
 
-Add new property <b>updateToVersion</b> to the <b>window</b> object.
+Echoes back a text string sent to the native layer.
 
-<pre>
-window.updateToVersion = function(str, callback) {
-    cordova.exec(callback, function(err) {
-        callback('error');
-    }, "Echo", "echo", [str]);
-};
-</pre>
-
-To use it call method with two parametrs. 
-  
-<b>params:</b> <br/>
- <i>str</i>      - version to download<br/>
- <i>callback</i> - response function  <br/>
+```
+window.echo("echome", function(echoValue) {
+    alert(echoValue == "echome"); // should alert true.
+});
+```
