@@ -10,23 +10,24 @@
     Echo Plugin for updateToVersion.js
   </description>
 
-  <asset src="www/updateToVersion.js" target="plugins/updateToVersion.js" />
+  <js-module src="www/updateToVersion.js" name="updateToVersion">
+            <clobbers target="updateToVersion" />
+  </js-module>
 
   <engines>
     <engine name="cordova" version=">=2.7.0" />
   </engines>
+
   <!-- android -->
     <platform name="android">
-          <js-module src="www/updateToVersion.js" name="updateToVersion">
-            <clobbers target="window.updateToVersion" />
-        </js-module>
+        
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Echo"> 
-                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+                <param name="android-package" value="org.apache.cordova.plugin.updateToVersion"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Echo.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/updateToVersion.java" target-dir="src/org/apache/cordova/plugin" />
     </platform>
 </plugin>
 
