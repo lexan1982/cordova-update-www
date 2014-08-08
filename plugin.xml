@@ -15,56 +15,18 @@
   <engines>
     <engine name="cordova" version=">=2.7.0" />
   </engines>
-  
-   <js-module src="www/updateToVersion.js" name="updateToVersion">
-        <clobbers target="updateToVersion" />
-    </js-module>
-
   <!-- android -->
-  <platform name="android">
-       
-    <source-file src="src/android/Echo.java"
-                target-dir="src/org/apache/cordova/plugin" />
-
-    
-    <config-file target="res/xml/config.xml" parent="/*">
-      <feature name="Echo">
-        <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
-      </feature>
-    </config-file>
-    
-  </platform>
-  
-  
-  <!-- 
-  
     <platform name="android">
-    <config-file target="res/xml/config.xml" parent="plugins">
-      <plugin name="Echo" value="com.appgyver.plugin.Echo"/>
-    </config-file>
+          <js-module src="www/updateToVersion.js" name="updateToVersion">
+            <clobbers target="window.updateToVersion" />
+        </js-module>
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Echo"> 
+                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+            </feature>
+        </config-file>
 
-    <source-file src="src/android/com/appgyver/plugin/Echo.java"
-      target-dir="src/com/appgyver/plugin" />
-  </platform>
-  
-   
-  <platform name="ios">
-    <config-file target="config.xml" parent="/*/plugins">
-      <plugin name="Echo" value="Echo" onload="true" />
-    </config-file>
-
-    <config-file target="config.xml" parent="/widget">
-      <feature name="Echo">
-        <param name="ios-package" value="Echo"/>
-        <param name="onload" value="true" />
-      </feature>
-    </config-file>
-
-    <header-file src="src/ios/Echo.h" />
-
-    <source-file src="src/ios/Echo.m" />
-
-  </platform>
-  -->
+        <source-file src="src/android/Echo.java" target-dir="src/org/apache/cordova/plugin" />
+    </platform>
 </plugin>
 
