@@ -15,17 +15,19 @@
   <engines>
     <engine name="cordova" version=">=2.7.0" />
   </engines>
+  
+   <js-module src="www/updateToVersion.js" name="updateToVersion">
+        <clobbers target="updateToVersion" />
+    </js-module>
 
   <!-- android -->
   <platform name="android">
-    
-    
-    
+       
     <source-file src="src/android/Echo.java"
                 target-dir="src/org/apache/cordova/plugin" />
 
     
-    <config-file target="config.xml" parent="/*">
+    <config-file target="res/xml/config.xml" parent="/*">
       <feature name="Echo">
         <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
       </feature>
