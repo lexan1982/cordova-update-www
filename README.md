@@ -31,4 +31,4 @@ Call function <b>cordova.version</b> from js code with params:
   
   <i>callback</i> - success function<br/>
   <i>error</i> - error function<br/>
-  <i>updateTo</i> - zip url with new www folder<br/> 
+  <i>updateTo</i> - url to the zip. (It will be download and extract to the www folder)<br/> 
