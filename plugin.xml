@@ -22,7 +22,7 @@
   <!-- android -->
   <platform name="android">
     <config-file target="res/xml/config.xml" >
-      <plugin name="UpdateToVersion" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
+      <plugin name="android-package" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
     </config-file>
 
     <source-file src="src/android/UpdateToVersion.java"
