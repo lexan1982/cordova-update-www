@@ -1,14 +1,26 @@
-Steroids Echo plugin
-====================
+<!--
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+-->
 
-Sample Echo plugin for Steroids.js. Compatible with Cordova and [plugman](https://github.com/apache/cordova-plugman). Built upon the [Cordova Echo plugin example](http://cordova.apache.org/docs/en/3.0.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide).
+cordova-plugin-echo
+------------------------
 
-##Usage
+This is a plugin implementation of the Echo function to test the bridge. It is currently used by Mobile Spec to test and benchmark the bridge.
 
-Echoes back a text string sent to the native layer.
-
-```
-window.echo("echome", function(echoValue) {
-    alert(echoValue == "echome"); // should alert true.
-});
-```

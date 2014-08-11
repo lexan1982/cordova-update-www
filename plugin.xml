@@ -1,53 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    id="org.ideateam.cordova.plugin.UpdateToVersion"
-    version="1.0.0">
 
-    <name>EchoPlugin</name>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
-  <description>
-    Echo Plugin for Steroids.js
-  </description>
+    http://www.apache.org/licenses/LICENSE-2.0
 
-  <asset src="www/UpdateToVersion.js" target="www/UpdateToVersion.js" /> 
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
 
-  <js-module src="www/UpdateToVersion.js" name="UpdateToVersion">
-    <clobbers target="updateToVersion" />
-  </js-module>
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+           id="org.apache.cordova.test.echo"
+      version="0.1.0">
+    <name>Echo</name>
 
-  <engines>
-    <engine name="cordova" version=">=2.7.0" />
-  </engines>
+    <js-module src="www/does-not-run.js" name="does-not-run" />
 
-  <!-- android -->
-  <platform name="android">
-    <config-file target="res/xml/config.xml">
-      <feature name="UpdateToVersion">
-        <param name="android-package" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
-      </feature>
-    </config-file>
-    
-    <source-file src="src/android/UpdateToVersion.java"
-      target-dir="src/org/ideateam/cordova/plugin" />
-  </platform>
+    <js-module src="www/echo.js" name="echo">
+        <clobbers target="cordova.echo" />
+    </js-module>
 
-  <!-- ios 
-  <platform name="ios">
-    <config-file target="config.xml" parent="/*/plugins">
-      <plugin name="Echo" value="Echo" onload="true" />
-    </config-file>
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Echo" >
+                <param name="android-package" value="org.apache.cordova.test.Echo"/>
+            </feature>
+        </config-file>
 
-    <config-file target="config.xml" parent="/widget">
-      <feature name="Echo">
-        <param name="ios-package" value="Echo"/>
-        <param name="onload" value="true" />
-      </feature>
-    </config-file>
+        <source-file src="src/android/Echo.java" target-dir="src/org/apache/cordova/test" />
+    </platform>
 
-    <header-file src="src/ios/Echo.h" />
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Echo">
+                <param name="ios-package" value="CDVEcho"/>
+            </feature>
+        </config-file>
+        <source-file src="src/ios/CDVEcho.m" />
+    </platform>
 
-    <source-file src="src/ios/Echo.m" />
-
-  </platform>
-  -->
 </plugin>
