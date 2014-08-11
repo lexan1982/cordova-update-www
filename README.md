@@ -25,10 +25,10 @@ cordova-update-www
 This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project.
 
 ------------------------
-Call <b>cordova.version</b> with params:
+Call function <b>cordova.version</b> from js code with params:
 
   <pre>cordova.version(callback, error, updateTo);</pre>
   
-  <i>callback</i> - success function</br>
-  <i>error</i> - error function</br>
-  <i>updateTo</i> - zip url with new www folder</br> 
+  <i>callback</i> - success function<br/>
+  <i>error</i> - error function<br/>
+  <i>updateTo</i> - zip url with new www folder<br/> 
