@@ -33,4 +33,4 @@ Call function <b>cordova.version</b> from js code with params:
   <i>error</i> - error function<br/>
   <i>updateTo</i> - url to the zip. (It will be download and extract to the www folder)<br/> 
   
-  <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">docs</a>
+  <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">Cordova docs</a>
