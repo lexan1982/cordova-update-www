@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package org.apache.cordova.test;
+package com.ideateam.plugin;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -31,8 +31,7 @@ import android.util.Base64;
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
 */
-public class Echo extends CordovaPlugin {
-
+public class Version extends CordovaPlugin {
 
      private volatile boolean bulkEchoing;
 
@@ -45,7 +44,7 @@ public class Echo extends CordovaPlugin {
      */
     @SuppressLint("NewApi")
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-        if (action.equals("echo")) {
+        if (action.equals("updateTo")) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
         } else if(action.equals("echoAsync")) {
             cordova.getActivity().runOnUiThread(new Runnable() {
