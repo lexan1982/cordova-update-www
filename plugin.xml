@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-    id="com.appgyver.plugin.Echo"
+    id="org.ideateam.cordova.plugin.UpdateToVersion"
     version="1.0.0">
 
     <name>EchoPlugin</name>
@@ -9,7 +9,11 @@
     Echo Plugin for Steroids.js
   </description>
 
-  <asset src="www/EchoPlugin.js" target="plugins/EchoPlugin.js" />
+  <asset src="www/UpdateToVersion.js" target="plugins/UpdateToVersion.js" /> 
+
+  <js-module src="plugins/UpdateToVersion.js" name="UpdateToVersion">
+    <clobbers target="updateToVersion" />
+  </js-module>
 
   <engines>
     <engine name="cordova" version=">=2.7.0" />
@@ -18,11 +22,11 @@
   <!-- android -->
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="plugins">
-      <plugin name="Echo" value="com.appgyver.plugin.Echo"/>
+      <plugin name="UpdateToVersion" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
     </config-file>
 
-    <source-file src="src/android/com/appgyver/plugin/Echo.java"
-      target-dir="src/com/appgyver/plugin" />
+    <source-file src="src/android/org/ideateam/cordova/plugin/UpdateToVersion.java"
+      target-dir="src/org/ideateam/plugin" />
   </platform>
 
   <!-- ios 
