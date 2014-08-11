@@ -21,10 +21,12 @@
 
   <!-- android -->
   <platform name="android">
-    <config-file target="res/xml/config.xml" >
-      <plugin name="android-package" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
+    <config-file target="res/xml/config.xml">
+      <feature name="UpdateToVersion">
+        <param name="android-package" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
+      </feature>
     </config-file>
-
+    
     <source-file src="src/android/UpdateToVersion.java"
       target-dir="src/org/ideateam/cordova/plugin" />
   </platform>
