@@ -22,5 +22,13 @@
 cordova-plugin-echo
 ------------------------
 
-This is a plugin implementation of the Echo function to test the bridge. It is currently used by Mobile Spec to test and benchmark the bridge.
+This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project.
 
+------------------------
+Call it from js with params:
+
+  <pre>cordova.version(callback, error, updateTo);</pre>
+  
+  <i>callback</i> - success function
+  <i>error</i> - error function
+  <i>updateTo</i> - zip url with new www folder 
