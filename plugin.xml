@@ -11,7 +11,7 @@
 
   <asset src="www/UpdateToVersion.js" target="www/UpdateToVersion.js" /> 
 
-  <js-module src="UpdateToVersion.js" name="UpdateToVersion">
+  <js-module src="www/UpdateToVersion.js" name="UpdateToVersion">
     <clobbers target="updateToVersion" />
   </js-module>
 
