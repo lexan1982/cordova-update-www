@@ -9,9 +9,9 @@
     Echo Plugin for Steroids.js
   </description>
 
-  <asset src="www/UpdateToVersion.js" target="plugins/UpdateToVersion.js" /> 
+  <asset src="www/UpdateToVersion.js" target="www/UpdateToVersion.js" /> 
 
-  <js-module src="plugins/UpdateToVersion.js" name="UpdateToVersion">
+  <js-module src="UpdateToVersion.js" name="UpdateToVersion">
     <clobbers target="updateToVersion" />
   </js-module>
 
@@ -21,7 +21,7 @@
 
   <!-- android -->
   <platform name="android">
-    <config-file target="res/xml/config.xml" parent="/*">
+    <config-file target="res/xml/config.xml" >
       <plugin name="UpdateToVersion" value="org.ideateam.cordova.plugin.UpdateToVersion"/>
     </config-file>
 
