@@ -19,6 +19,21 @@ under the License.
 
 package com.ideateam.plugin;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
@@ -26,13 +41,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
 */
 public class Version extends CordovaPlugin {
-
+	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+	 private String url;
+	 private String remoteVersion;
+	 private String remoteChecksum;
+	 private String updateChecksum;
+	 private Activity activity;
+	 
+	 private ProgressDialog mProgressDialog;
      private volatile boolean bulkEchoing;
 
      /**
@@ -42,10 +71,25 @@ public class Version extends CordovaPlugin {
      * @param args              JSONArry of arguments for the plugin.
      * @param callbackContext   The callback context from which we were invoked.
      */
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi") 
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("updateTo")) {
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
+        	
+        	//args ['0.22-234','http://uart.universityathlete.com/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
+ 	        Log.d("uar2014", "..updateTo: " + args.toString());
+        	 
+ 	        this.remoteVersion = args.getString(0);
+ 	        this.url = args.getString(1) + this.remoteVersion;
+ 	        this.remoteChecksum = args.getString(3);
+ 	       
+        	this.activity = this.cordova.getActivity();
+        
+        	Log.d("uar2014", "..remoteVersion: " + remoteVersion);
+        	
+        	updateToVersion();
+        	
+          // FIXME succes callback  
+          //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
         } else if(action.equals("echoAsync")) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
@@ -93,5 +137,235 @@ public class Version extends CordovaPlugin {
             return false;
         }
         return true;
+    }
+    
+    
+    private void updateToVersion() {
+		
+    	activity.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				 new DownloadFileAsync().execute(url);
+
+			}
+		});
+
+	}
+    
+    class DownloadFileAsync extends AsyncTask<String, String, String> {
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		mProgressDialog = new ProgressDialog(activity);
+			mProgressDialog.setMessage("Downloading file..");
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			mProgressDialog.setCancelable(false);
+			mProgressDialog.show();
+    		
+    		
+    	}
+
+    	@Override 
+    	protected String doInBackground(String... aurl) {
+    		int count;
+    		
+    	try {
+
+	    	URL url = new URL(aurl[0]);
+	    	URLConnection conexion = url.openConnection();
+	    	conexion.connect();
+	
+	    	int lenghtOfFile = conexion.getContentLength();
+	    	Log.d("uar2014", "Lenght of file: " + lenghtOfFile);
+	    	mProgressDialog.setMax(lenghtOfFile/1024);
+	    	InputStream input = new BufferedInputStream(url.openStream());	
+	    	FileOutputStream output = activity.openFileOutput(String.format("%s.zip", remoteVersion), Context.MODE_PRIVATE);
+	
+	    	byte data[] = new byte[1024]; 
+	     
+	    	long total = 0;
+	
+	    		while ((count = input.read(data)) != -1) {
+	    			total += count;
+	    			publishProgress(""+(int)((total*100)/lenghtOfFile));
+	    			output.write(data, 0, count);
+	    		} 
+	
+	    		output.flush();
+	    		output.close();
+	    		input.close();
+	    		
+	    		
+    		
+    	} catch (Exception e) {}
+    	
+    	
+    	return null;
+
+    	}
+    	protected void onProgressUpdate(String... progress) {
+    		 Log.d("uar2014",progress[0]);
+    		 mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+    	}
+
+    	@Override
+    	protected void onPostExecute(String unused) {
+    		mProgressDialog.dismiss();
+    		UnzipUtility unzipper = new UnzipUtility();
+    		 try {
+
+    			 String zipFile = String.format("%s/%s", activity.getFilesDir(), remoteVersion);			 			 			 			 
+    			 
+    			
+    			 
+    			 remoteChecksum = getSHA1FromFileContent(zipFile + ".zip").toUpperCase();
+    			
+    			 Log.d("uar2014", "---------------getSHA1FromFileContent---------------------");	
+    			 Log.d("uar2014", remoteChecksum);	
+    			 Log.d("uar2014", updateChecksum);	
+    			 
+    			 
+    			 if(updateChecksum != null && !updateChecksum.equals(remoteChecksum)){
+    				 showAlertDialogCheckSum();
+    				 File f = new File(zipFile + ".zip");		         
+    		         f.delete();
+    		         updateChecksum = null;
+    				 return;
+    				
+    			 }
+    			 
+    			 unzipper.unzip(zipFile + ".zip", zipFile );
+    	         File f = new File(zipFile + ".zip");
+    	         
+    	         reloadAppFromZip(remoteVersion);
+    	         
+    	         //f.delete();
+    	         
+    	         File[] all = activity.getFilesDir().listFiles();
+    	         for(int i = 0; i < all.length; i++){
+    	        	 boolean isDeleted = false;
+    	        	 
+    	        	 if(!all[i].getName().equals(remoteVersion))
+    	        		 isDeleted = DeleteRecursive(all[i]);
+    	        	
+    	        	 
+    	         }
+    	         
+    	     } catch (Exception ex) {
+    	         // some errors occurred
+    	         ex.printStackTrace();
+    	     }
+    	}
+
+    	 private void reloadAppFromZip(String version) {
+    			// TODO Auto-generated method stub
+    	//	 activity.loadUrl(String.format("file:///%s/%s/index.html", activity.getFilesDir(), version) );
+    		}
+    	
+    	 private boolean DeleteRecursive(File fileOrDirectory) {
+    			
+    		    if (fileOrDirectory.isDirectory()) 
+    		        for (File child : fileOrDirectory.listFiles())
+    		            DeleteRecursive(child);
+
+    		    return fileOrDirectory.delete();
+    		}
+    }
+    public class UnzipUtility {
+        /**
+         * Size of the buffer to read/write data
+         */
+        private static final int BUFFER_SIZE = 4096;
+        /**
+         * Extracts a zip file specified by the zipFilePath to a directory specified by
+         * destDirectory (will be created if does not exists)
+         * @param zipFilePath
+         * @param destDirectory
+         * @throws IOException
+         */
+        public void unzip(String zipFilePath, String destDirectory) throws IOException {
+            File destDir = new File(destDirectory);
+            if (!destDir.exists()) {
+                destDir.mkdir();
+            }
+            ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+            ZipEntry entry = zipIn.getNextEntry();
+            // iterates over entries in the zip file
+            while (entry != null) {
+                String filePath = destDirectory + File.separator + entry.getName();
+                if (!entry.isDirectory()) {
+                    // if the entry is a file, extracts it
+                    extractFile(zipIn, filePath);
+                } else {
+                    // if the entry is a directory, make the directory
+                    File dir = new File(filePath);
+                    dir.mkdir();
+                }
+                zipIn.closeEntry();
+                entry = zipIn.getNextEntry();
+            }
+            zipIn.close();
+        }
+        /**
+         * Extracts a zip entry (file entry)
+         * @param zipIn
+         * @param filePath
+         * @throws IOException
+         */
+        private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+            byte[] bytesIn = new byte[BUFFER_SIZE];
+            int read = 0;
+            while ((read = zipIn.read(bytesIn)) != -1) {
+                bos.write(bytesIn, 0, read);
+            }
+            bos.close();
+        }
+    }
+    public static String getSHA1FromFileContent(String filename)
+            throws NoSuchAlgorithmException, IOException {
+
+        final MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+
+        InputStream is = new BufferedInputStream(new FileInputStream(filename));
+        final byte[] buffer = new byte[1024];
+
+        for (int read = 0; (read = is.read(buffer)) != -1;) {
+            messageDigest.update(buffer, 0, read);
+        }
+
+        is.close();
+
+        // Convert the byte to hex format
+        Formatter formatter = new Formatter();
+
+        for (final byte b : messageDigest.digest()) {
+            formatter.format("%02x", b);
+        }
+
+        String res = formatter.toString();
+
+        formatter.close();
+
+        return res;
+    }
+    private void showAlertDialogCheckSum()
+    {
+    	
+    	new AlertDialog.Builder(this.cordova.getActivity())
+        .setTitle("Checksum does not match")
+        .setMessage(String.format("Waiting for SHA-1: %s\nGet Zip with SHA-1: %s", updateChecksum, remoteChecksum))
+        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        	//startDownload(baseUrl + remoteVersion);
+        }
+
+    })
+    //.setNegativeButton("Cancel", null)
+    .show();
     }
 }
