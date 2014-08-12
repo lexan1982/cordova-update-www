@@ -21,11 +21,14 @@ package com.ideateam.plugin;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -46,6 +49,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -58,7 +62,7 @@ public class Version extends CordovaPlugin {
 	 private String url;
 	 private String remoteVersion;
 	 private String remoteChecksum;
-	 private String updateChecksum;
+	 private String zipChecksum;
 	 private Activity activity;
 	 
 	 private ProgressDialog mProgressDialog;
@@ -77,10 +81,11 @@ public class Version extends CordovaPlugin {
         	
         	//args ['0.22-234','http://uart.universityathlete.com/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
  	        Log.d("uar2014", "..updateTo: " + args.toString());
+ 	        String[] params = args.getString(0).split(",");
         	 
- 	        this.remoteVersion = args.getString(0);
- 	        this.url = args.getString(1) + this.remoteVersion;
- 	        this.remoteChecksum = args.getString(3);
+ 	        this.remoteVersion = params[0];
+ 	        this.url = params[1] + this.remoteVersion;
+ 	        this.remoteChecksum = params[2];
  	       
         	this.activity = this.cordova.getActivity();
         
@@ -206,7 +211,7 @@ public class Version extends CordovaPlugin {
 
     	}
     	protected void onProgressUpdate(String... progress) {
-    		 Log.d("uar2014",progress[0]);
+    	//	 Log.d("uar2014",progress[0]);
     		 mProgressDialog.setProgress(Integer.parseInt(progress[0]));
     	}
 
@@ -220,18 +225,18 @@ public class Version extends CordovaPlugin {
     			 
     			
     			 
-    			 remoteChecksum = getSHA1FromFileContent(zipFile + ".zip").toUpperCase();
+    			 zipChecksum = getSHA1FromFileContent(zipFile + ".zip").toUpperCase();
     			
     			 Log.d("uar2014", "---------------getSHA1FromFileContent---------------------");	
     			 Log.d("uar2014", remoteChecksum);	
-    			 Log.d("uar2014", updateChecksum);	
+    			 Log.d("uar2014", zipChecksum);	
     			 
     			 
-    			 if(updateChecksum != null && !updateChecksum.equals(remoteChecksum)){
+    			 if(zipChecksum != null && !zipChecksum.equals(remoteChecksum)){
     				 showAlertDialogCheckSum();
     				 File f = new File(zipFile + ".zip");		         
     		         f.delete();
-    		         updateChecksum = null;
+    		         zipChecksum = null;
     				 return;
     				
     			 }
@@ -261,6 +266,7 @@ public class Version extends CordovaPlugin {
 
     	 private void reloadAppFromZip(String version) {
     			// TODO Auto-generated method stub
+    		 Log.d("uar2014",".. reloadAppFromZip");
     	//	 activity.loadUrl(String.format("file:///%s/%s/index.html", activity.getFilesDir(), version) );
     		}
     	
@@ -324,6 +330,107 @@ public class Version extends CordovaPlugin {
             bos.close();
         }
     }
+    
+    private File loadFromWwwOrZip() {
+		// TODO Auto-generated method stub
+    	 
+    	File[] f = activity.getFilesDir().listFiles();
+    	
+    	File wwwFolder = null;
+    	
+    	if(f != null && f.length > 0){
+	    	wwwFolder = f[0] ;
+			
+			for(int i = 0; i < f.length; i++){
+				
+				if(wwwFolder.lastModified() < f[i].lastModified()){			
+					wwwFolder = f[i];
+				}
+			}
+    	}
+		return wwwFolder; 
+	}
+    private String getCurrentVersionZip(File wwwFolder){
+    	String version = null;
+    			
+		File indexFile = new File(wwwFolder.getAbsoluteFile() + "/index.html");
+				
+		try {
+			FileInputStream fin = new FileInputStream (wwwFolder.getAbsoluteFile()+"/index.html");				
+			BufferedReader r = new BufferedReader(new InputStreamReader(fin));
+			
+			String line;
+	    	while ((line = r.readLine()) != null) {
+	    	   if(line.contains(" version: '")){
+	    		   
+	    		   int start = line.indexOf("'");
+	    		   int end = line.lastIndexOf("-");
+	    		   
+	    		   version = line.substring(start + 1, end);
+	    		   
+	    		   break;
+	    	   }
+	    	} 
+	         
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//	BufferedReader r = new BufferedReader(new InputStreamReader(openFileInput(wwwFolder.getName()+"/index.html") ));
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return version;
+    }
+    private String getCurrentVersionWWW(){
+    	AssetManager am = activity.getAssets();
+    	InputStream reader = null;    	
+    	String version = "";
+		
+    	//Get version from APK's assets folder
+    	//zip with updates not founded 
+    	
+    	
+    	try {
+			reader = am.open("www/index.html");
+			BufferedReader r = new BufferedReader(new InputStreamReader(reader));
+	    	
+			String line;
+	    	while ((line = r.readLine()) != null) {
+	    	   if(line.contains(" version: '")){
+	    		   
+	    		   int start = line.indexOf("'");
+	    		   int end = line.lastIndexOf("-");
+	    		   
+	    		   version = line.substring(start + 1, end);
+	    		   
+	    		   break;
+	    	   }
+	    	} 
+	    	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.d("uar2014","Can't read from www/index.html");
+			Log.d("uar2014",e.getMessage());
+		}
+		finally{
+			if (reader != null) {
+		          try {
+		            reader.close();
+		          } catch (IOException e) {
+		            e.printStackTrace();
+		          }
+		        }			
+		
+    	}
+        	
+		 return version;
+    }
+ 
+    
     public static String getSHA1FromFileContent(String filename)
             throws NoSuchAlgorithmException, IOException {
 
@@ -353,10 +460,10 @@ public class Version extends CordovaPlugin {
     }
     private void showAlertDialogCheckSum()
     {
-    	
-    	new AlertDialog.Builder(this.cordova.getActivity())
+    	Log.d("uar2014","..showAlertDialogCheckSum");
+    	new AlertDialog.Builder(activity)
         .setTitle("Checksum does not match")
-        .setMessage(String.format("Waiting for SHA-1: %s\nGet Zip with SHA-1: %s", updateChecksum, remoteChecksum))
+        .setMessage(String.format("Waiting for SHA-1: %s\nGet Zip with SHA-1: %s", remoteChecksum, zipChecksum))
         .setPositiveButton("Ok", new DialogInterface.OnClickListener()
     {
         @Override
