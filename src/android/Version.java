@@ -39,7 +39,9 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +53,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -154,14 +155,20 @@ public class Version extends CordovaPlugin {
     
     }
     */
+    
     @Override
-    public Uri remapUri(Uri uri) {
-    	Log.d("uar2014", "..remapUri" + uri);   
-        
-    	return null;
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+    	
+    	 Log.d("uar2014", "..    CordovaInterface ");
+    	 
+    	 if(cordova.getActivity() != null)
+    		 Log.d("uar2014", "..    getActivity ");
+    	 else Log.d("uar2014", "..    null getActivity ");
+    	 
+    	 
     }
     
-    
+     
     private void updateToVersion() {
 		
     	activity.runOnUiThread(new Runnable() {
