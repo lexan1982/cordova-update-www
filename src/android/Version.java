@@ -50,6 +50,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -146,7 +147,7 @@ public class Version extends CordovaPlugin {
         return true;
     }
     
-    @Override
+    /*@Override
     public void onResume(boolean multitasking) {
     	// TODO Auto-generated method stub
     	super.onResume(multitasking);
@@ -154,6 +155,16 @@ public class Version extends CordovaPlugin {
     	 Log.d("uar2014", "..    onResume!!! ");
     	
     
+    }
+    */
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    	// TODO Auto-generated method stub
+    	super.onActivityResult(requestCode, resultCode, intent);
+    
+   	 	Log.d("uar2014", "..    onActivityResult!!! ");
+     
     }
     
     
