@@ -161,8 +161,12 @@ public class Version extends CordovaPlugin {
     	
     	 Log.d("uar2014", "..    CordovaInterface ");
     	 
-    	 if(cordova.getActivity() != null)
+    	 if(cordova.getActivity() != null){
     		 Log.d("uar2014", "..    getActivity ");
+    		 ((CordovaActivity)cordova.getActivity()).loadUrl("file:///android_asset/www/index2.html");
+    		 
+    		 
+    	 }
     	 else Log.d("uar2014", "..    null getActivity ");
     	 
     	 
