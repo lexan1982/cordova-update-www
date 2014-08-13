@@ -38,6 +38,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -53,6 +54,7 @@ import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
@@ -67,7 +69,7 @@ public class Version extends CordovaPlugin {
 	 
 	 private ProgressDialog mProgressDialog;
      private volatile boolean bulkEchoing;
-
+     
      /**
      * Executes the request and returns PluginResult.
      *
@@ -142,6 +144,16 @@ public class Version extends CordovaPlugin {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public void onResume(boolean multitasking) {
+    	// TODO Auto-generated method stub
+    	super.onResume(multitasking);
+    
+    	Toast.makeText(activity.getApplicationContext(),"onRESUME!!!" , Toast.LENGTH_LONG).show();
+    	
+    
     }
     
     
@@ -267,7 +279,7 @@ public class Version extends CordovaPlugin {
     	 private void reloadAppFromZip(String version) {
     			// TODO Auto-generated method stub
     		 Log.d("uar2014",".. reloadAppFromZip");
-    	//	 activity.loadUrl(String.format("file:///%s/%s/index.html", activity.getFilesDir(), version) );
+    		 ((CordovaActivity)activity).loadUrl(String.format("file:///%s/%s/index.html", activity.getFilesDir(), version) );
     		}
     	
     	 private boolean DeleteRecursive(File fileOrDirectory) {
