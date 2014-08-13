@@ -154,14 +154,15 @@ public class Version extends CordovaPlugin {
     	 Log.d("uar2014", "..    onResume!!! ");    	
     
     }
-    */
     
+    private boolean isWww = false;
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     	
     	 Log.d("uar2014", "..    CordovaInterface ");
     	 
-    	 if(cordova.getActivity() != null){
+    	 if(cordova.getActivity() != null && isWww == false){
+    		 isWww = true;
     		 Log.d("uar2014", "..    getActivity ");
     		 ((CordovaActivity)cordova.getActivity()).loadUrl("file:///android_asset/www/index2.html");
     		 
@@ -171,7 +172,7 @@ public class Version extends CordovaPlugin {
     	 
     	 
     }
-    
+    */
      
     private void updateToVersion() {
 		
