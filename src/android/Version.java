@@ -151,7 +151,7 @@ public class Version extends CordovaPlugin {
     	// TODO Auto-generated method stub
     	super.onResume(multitasking);
     
-    	Toast.makeText(activity.getApplicationContext(),"onRESUME!!!" , Toast.LENGTH_LONG).show();
+    	 Log.d("uar2014", "..    onResume!!! ");
     	
     
     }
