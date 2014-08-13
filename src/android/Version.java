@@ -39,7 +39,9 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,12 +52,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
@@ -157,15 +157,13 @@ public class Version extends CordovaPlugin {
     
     }
     */
-    
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	// TODO Auto-generated method stub
-    	super.onActivityResult(requestCode, resultCode, intent);
-    
-   	 	Log.d("uar2014", "..    onActivityResult!!! ");
-     
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+      super.initialize(cordova, webView);
+      // your init code here
+      Log.d("uar2014", "..    initialize!!! ");
     }
+
     
     
     private void updateToVersion() {
