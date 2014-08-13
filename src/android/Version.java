@@ -150,21 +150,17 @@ public class Version extends CordovaPlugin {
     /*@Override
     public void onResume(boolean multitasking) {
     	// TODO Auto-generated method stub
-    	super.onResume(multitasking);
-    
-    	 Log.d("uar2014", "..    onResume!!! ");
-    	
+    	super.onResume(multitasking);    
+    	 Log.d("uar2014", "..    onResume!!! ");    	
     
     }
     */
     @Override
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-      super.initialize(cordova, webView);
-      // your init code here
-      Log.d("uar2014", "..    initialize!!! ");
+    public boolean onOverrideUrlLoading(String url) {
+    	Log.d("uar2014", "..onOverrideUrlLoading" + url);   
+        return false;
+        	
     }
-
-    
     
     private void updateToVersion() {
 		
