@@ -48,7 +48,9 @@
         <uses-permission android:name="android.permission.BROADCAST_STICKY" />
         <uses-permission android:name="android.permission.GET_ACCOUNTS" />
       </config-file>
-        <source-file src="src/android/Version.java" target-dir="src/com/ideateam/plugin" />
+      <source-file src="src/android/Version.java" target-dir="src/com/ideateam/plugin" />
+      <source-file src="src/android/UAR2014.java" target-dir="src/com/ideateam/app" />
+
     </platform>
 
   
