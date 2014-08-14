@@ -26,7 +26,7 @@ import org.apache.cordova.CordovaActivity;
 
 import android.os.Bundle;
 
-public class UAR2014 extends CordovaActivity 
+public class MyActivity extends CordovaActivity 
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
