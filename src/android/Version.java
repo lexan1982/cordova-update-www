@@ -82,8 +82,8 @@ public class Version extends CordovaPlugin {
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         if (action.equals("updateTo")) {
         	
-        	//args ['0.22-234','http://uart.universityathlete.com/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
- 	        Log.d("uar2014", "..updateTo: " + args.toString());
+        	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
+ 	       
  	        String[] params = args.getString(0).split(",");
         	 
  	        this.remoteVersion = params[0];
@@ -92,8 +92,6 @@ public class Version extends CordovaPlugin {
  	       
         	this.activity = this.cordova.getActivity();
         
-        	Log.d("uar2014", "..remoteVersion: " + remoteVersion);
-        	
         	updateToVersion();
         	
           // FIXME succes callback  
@@ -151,27 +149,10 @@ public class Version extends CordovaPlugin {
     public void onResume(boolean multitasking) {
     	// TODO Auto-generated method stub
     	super.onResume(multitasking);    
-    	 Log.d("uar2014", "..    onResume!!! ");    	
+    
     
     }
     
-    private boolean isWww = false;
-    @Override
-    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-    	
-    	 Log.d("uar2014", "..    CordovaInterface ");
-    	 
-    	 if(cordova.getActivity() != null && isWww == false){
-    		 isWww = true;
-    		 Log.d("uar2014", "..    getActivity ");
-    		 ((CordovaActivity)cordova.getActivity()).loadUrl("file:///android_asset/www/index2.html");
-    		 
-    		 
-    	 }
-    	 else Log.d("uar2014", "..    null getActivity ");
-    	 
-    	 
-    }
     */
      
     private void updateToVersion() {
@@ -212,7 +193,7 @@ public class Version extends CordovaPlugin {
 	    	conexion.connect();
 	
 	    	int lenghtOfFile = conexion.getContentLength();
-	    	Log.d("uar2014", "Lenght of file: " + lenghtOfFile);
+	    
 	    	mProgressDialog.setMax(lenghtOfFile/1024);
 	    	InputStream input = new BufferedInputStream(url.openStream());	
 	    	FileOutputStream output = activity.openFileOutput(String.format("%s.zip", remoteVersion), Context.MODE_PRIVATE);
@@ -240,7 +221,7 @@ public class Version extends CordovaPlugin {
 
     	}
     	protected void onProgressUpdate(String... progress) {
-    	//	 Log.d("uar2014",progress[0]);
+
     		 mProgressDialog.setProgress(Integer.parseInt(progress[0]));
     	}
 
@@ -252,15 +233,8 @@ public class Version extends CordovaPlugin {
 
     			 String zipFile = String.format("%s/%s", activity.getFilesDir(), remoteVersion);			 			 			 			 
     			 
-    			
-    			 
     			 zipChecksum = getSHA1FromFileContent(zipFile + ".zip").toUpperCase();
     			
-    			 Log.d("uar2014", "---------------getSHA1FromFileContent---------------------");	
-    			 Log.d("uar2014", remoteChecksum);	
-    			 Log.d("uar2014", zipChecksum);	
-    			 
-    			 
     			 if(zipChecksum != null && !zipChecksum.equals(remoteChecksum)){
     				 showAlertDialogCheckSum();
     				 File f = new File(zipFile + ".zip");		         
@@ -295,7 +269,7 @@ public class Version extends CordovaPlugin {
 
     	 private void reloadAppFromZip(String version) {
     			// TODO Auto-generated method stub
-    		 Log.d("uar2014",".. reloadAppFromZip");
+    	
     		 ((CordovaActivity)activity).loadUrl(String.format("file:///%s/%s/index.html", activity.getFilesDir(), version) );
     		}
     	
@@ -442,8 +416,6 @@ public class Version extends CordovaPlugin {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Log.d("uar2014","Can't read from www/index.html");
-			Log.d("uar2014",e.getMessage());
 		}
 		finally{
 			if (reader != null) {
@@ -489,7 +461,7 @@ public class Version extends CordovaPlugin {
     }
     private void showAlertDialogCheckSum()
     {
-    	Log.d("uar2014","..showAlertDialogCheckSum");
+    
     	new AlertDialog.Builder(activity)
         .setTitle("Checksum does not match")
         .setMessage(String.format("Waiting for SHA-1: %s\nGet Zip with SHA-1: %s", remoteChecksum, zipChecksum))
