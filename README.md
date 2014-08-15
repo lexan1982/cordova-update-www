@@ -46,7 +46,8 @@ Call function <b>cordova.version</b> from js code with params:
   
   <i>callback</i> - success function<br/>
   <i>error</i> - error function<br/>
-  <i>updateTo</i> - //"zipFileName, url, zipHash" ("'0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG'")
+  <i>updateTo</i> - //"zipFileName, url, zipHash" ("'0.22-234', 'http://domain/update/android/',     
+                                                        '0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG'")
  	      
   
   <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">Cordova docs</a>
