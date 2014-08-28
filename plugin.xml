@@ -53,16 +53,52 @@
 
     </platform>
 
-  
-    <!-- ios
-    <platform name="ios">
+  <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="Echo">
-                <param name="ios-package" value="CDVEcho"/>
+            <feature name="Version">
+                <param name="ios-package" value="Version"/>
             </feature>
         </config-file>
-        <source-file src="src/ios/CDVEcho.m" />
+        
+        <header-file src ="src/ios/crypt.h" target-dir="minizip" />
+        
+        <source-file src ="src/ios/ioapi.c" target-dir="minizip" />
+        <header-file src ="src/ios/ioapi.h" target-dir="minizip" />
+        
+        <source-file src ="src/ios/mztools.c" target-dir="minizip" />
+        <header-file src ="src/ios/mztools.h" target-dir="minizip" />
+        
+        <source-file src ="src/ios/unzip.c" target-dir="minizip" />
+        <header-file src ="src/ios/unzip.h" target-dir="minizip" />
+        
+        <source-file src ="src/ios/zip.c" target-dir="minizip" />
+        <header-file src ="src/ios/zip.h" target-dir="minizip" />
+        
+        <header-file src ="src/ios/NSString+MD5Addition.h" />
+        <source-file src ="src/ios/NSString+MD5Addition.m"/>
+        
+        <header-file src ="src/ios/Reachability.h" />
+        <source-file src ="src/ios/Reachability.m" compiler-flags="-fno-objc-arc"/>
+        
+        <header-file src ="src/ios/SSZipArchive.h" />
+        <source-file src ="src/ios/SSZipArchive.m" compiler-flags="-fno-objc-arc"/>
+        
+        <header-file src ="src/ios/UIDevice+IdentifierAddition.h" />
+        <source-file src ="src/ios/UIDevice+IdentifierAddition.m" />
+        
+        <header-file src ="src/ios/UartViewController.h" />
+        <source-file src ="src/ios/UartViewController.m" />
+        <resource-file src ="src/ios/UartViewController.xib" />
+        
+        <header-file src ="src/ios/VersionPluginDelegate.h" />
+        <source-file src ="src/ios/VersionPluginDelegate.m" />
+        
+        <source-file src="src/ios/Version.m" />
+        
+        <framework src="libz.dylib" />
+        <framework src="MessageUI.framework" weak="true" />
+        <framework src="SystemConfiguration.framework" weak="true" />
+
     </platform>
-    -->
 
 </plugin>
