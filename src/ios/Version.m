@@ -46,7 +46,7 @@ static bool firstCall = YES;
     }
 }
 
-- (void) updateToVersion: (CDVInvokedUrlCommand*)command
+- (void) updateTo: (CDVInvokedUrlCommand*)command
 {
     NSArray* args = [command.arguments objectAtIndex:0];
  
