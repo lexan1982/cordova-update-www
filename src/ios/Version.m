@@ -18,11 +18,46 @@
  */
 
 #import <Cordova/CDV.h>
+#import "VersionPluginDelegate.h"
+#import "AppDelegate.h"
 
-@interface CDVEcho : CDVPlugin
+@interface Version : CDVPlugin {
+
+    VersionPluginDelegate* dlg;
+}
+
 @end
 
-@implementation CDVEcho
+
+
+@implementation Version
+
+static bool firstCall = YES;
+
+- (void)pluginInitialize
+{
+    if (firstCall) {
+        
+        dlg = [[VersionPluginDelegate alloc] init];
+        firstCall = NO;
+        
+        AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        appDlg.window.rootViewController = dlg.viewController;
+    }
+}
+
+- (void) updateToVersion: (CDVInvokedUrlCommand*)command
+{
+    NSArray* args = [command.arguments objectAtIndex:0];
+ 
+    NSString* remoteVersion = [args objectAtIndex:0];
+    NSString* url = [NSString stringWithFormat:@"%@%@", [args objectAtIndex:1], remoteVersion];
+    NSString* remoteChecksum = [args objectAtIndex:2];
+  
+    [dlg pluginPullDataFromWeb:url];
+    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
+    
+}
 
 - (void)echo:(CDVInvokedUrlCommand*)command
 {
