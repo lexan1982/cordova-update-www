@@ -48,7 +48,7 @@ static bool firstCall = YES;
 
 - (void) updateTo: (CDVInvokedUrlCommand*)command
 {
-    NSArray* args = [command.arguments objectAtIndex:0];
+    NSArray* args = [[command.arguments objectAtIndex:0] componentsSeparatedByString:@","];
  
     NSString* remoteVersion = [args objectAtIndex:0];
     NSString* url = [NSString stringWithFormat:@"%@%@", [args objectAtIndex:1], remoteVersion];
