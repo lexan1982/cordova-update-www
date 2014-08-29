@@ -52,7 +52,7 @@ static bool firstCall = YES;
  
     NSString* remoteVersion = [args objectAtIndex:0];
     NSString* url = [NSString stringWithFormat:@"%@%@", [args objectAtIndex:1], remoteVersion];
-    NSString* remoteChecksum = [args objectAtIndex:2];
+    //NSString* remoteChecksum = [args objectAtIndex:2];
   
     [dlg pluginPullDataFromWeb:url];
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
