@@ -226,7 +226,7 @@ public class Version extends CordovaPlugin {
     			 
     			 zipChecksum = getSHA1FromFileContent(zipFile + ".zip").toUpperCase();
     			
-    			 if(zipChecksum != null && !zipChecksum.equals(remoteChecksum)){
+    			 if(zipChecksum != null && remoteChecksum !=null && !zipChecksum.equals(remoteChecksum)){
     				 showAlertDialogCheckSum();
     				 File f = new File(zipFile + ".zip");		         
     		         f.delete();
