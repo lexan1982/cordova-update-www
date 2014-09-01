@@ -88,7 +88,7 @@ public class Version extends CordovaPlugin {
         	 
  	        this.remoteVersion = params[0];
  	        this.url = params[1] + this.remoteVersion;
- 	        this.remoteChecksum = params[2];
+ 	        //this.remoteChecksum = params[2];
  	       
         	this.activity = this.cordova.getActivity();
         
@@ -145,16 +145,7 @@ public class Version extends CordovaPlugin {
         return true;
     }
     
-    /*@Override
-    public void onResume(boolean multitasking) {
-    	// TODO Auto-generated method stub
-    	super.onResume(multitasking);    
-    
-    
-    }
-    
-    */
-     
+
     private void updateToVersion() {
 		
     	activity.runOnUiThread(new Runnable() {
