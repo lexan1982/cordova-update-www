@@ -20,13 +20,15 @@
 package com.ideateam.app;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaActivity;
 
 import android.os.Bundle;
 
-public class MyActivity extends CordovaActivity 
+public class UAR2014 extends CordovaActivity 
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -50,15 +52,18 @@ public class MyActivity extends CordovaActivity
 		// TODO Auto-generated method stub
     	 
     	File[] f = getFilesDir().listFiles();
-    	
+    	    	
     	File wwwFolder = null;
     	
     	if(f != null && f.length > 0){
-	    	wwwFolder = f[0] ;
-			
+	    				
 			for(int i = 0; i < f.length; i++){
+				if(wwwFolder == null && !f[i].getName().equals("Documents"))
+				{	wwwFolder = f[i] ;
+					continue;
+				}
 				
-				if(wwwFolder.lastModified() < f[i].lastModified()){			
+				if(wwwFolder != null && wwwFolder.lastModified() < f[i].lastModified()){			
 					wwwFolder = f[i];
 				}
 			}
