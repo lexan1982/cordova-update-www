@@ -39,6 +39,11 @@ This is a plugin implementation of the <b>UpdateTo Version</b> function which ca
     } </pre>
   
   
+------------------------
+<b>Installation for iOS</b> 
+  
+  Move file <i>MainViewController.m</i> to the directory <i>platforms\ios\ you-package-name \Classes</i>
+
 ----------------------
 Call function <b>cordova.version</b> from js code with params:
 
