@@ -56,3 +56,5 @@ Call function <b>cordova.version</b> from js code with params:
  	      
   
   <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">Cordova docs</a>
+  
+  <a href="myapp://download/0.22-777.zip">MyApp</a>
