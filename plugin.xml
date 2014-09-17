@@ -23,7 +23,9 @@
            id="com.ideateam.plugin.version"
       version="0.1.0">
     <name>Version</name>
-
+    
+    <preference name="URL_SCHEME" />
+    
     <js-module src="www/version.js" name="version">
         <clobbers target="cordova.version" />
     </js-module>
