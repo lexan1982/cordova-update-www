@@ -63,6 +63,7 @@
 - (void) DoMoveWWW;
 - (void) pullDataFromWeb:(NSString*) srcFile;
 - (void) pluginPullDataFromWeb:(NSString*) srcFile;
+- (BOOL) handleOpenURL:(NSURL*)url;
 
 - (void) unzipNew:(NSString*) srcFile;
 - (IBAction) timerCheckWebLoadedMethod:(NSTimer*)timer;

@@ -111,7 +111,7 @@
   
   // 900 is 15 min...
   // check for a new version every 12 minutes and auto upload evals every 30 min...
-    /*[NSTimer scheduledTimerWithTimeInterval:(12*60.0) target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:YES];
+  /*[NSTimer scheduledTimerWithTimeInterval:(12*60.0) target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:YES];
   [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:NO];
   
   [NSTimer scheduledTimerWithTimeInterval:(30*60.0) target:self selector:@selector(uploadEvalsLooped:) userInfo:@"" repeats:YES];
@@ -296,7 +296,7 @@
 
 // this happens while we are running ( in the background, or from within our own app )
 // only valid if kyabase-Info.plist specifies a protocol to handle
-- (BOOL) application:(UIApplication*)application handleOpenURL:(NSURL*)url 
+- (BOOL) handleOpenURL:(NSURL*)url
 {
     if (!url) { 
         return NO; 
@@ -353,17 +353,18 @@
         NSArray *myurlparts = [mytempURL pathComponents];
         NSString *versionName = [myurlparts objectAtIndex:2];
         [[NSUserDefaults standardUserDefaults] setObject:versionName forKey:@"_pullVersion"];
-        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pullDataFromTimer:) userInfo:nil repeats:NO];
-        NSString *jsReturn = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"phonegap_upload_evals();"];
+          [self pullDataFromWeb:versionName];
+        //[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pullDataFromTimer:) userInfo:nil repeats:NO];
+        //NSString *jsReturn = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"phonegap_upload_evals();"];
         return YES;
     }
     
 	// calls into javascript global function 'handleOpenURL'
-    NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
-    [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
+    //NSString* jsString = [NSString stringWithFormat:@"handleOpenURL(\"%@\");", url];
+    //[self.viewController.webView stringByEvaluatingJavaScriptFromString:jsString];
     
     // all plugins will get the notification, and their handlers will be called 
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
+    //[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
     
     return YES;    
 }
@@ -636,6 +637,21 @@
     NSString  *destination = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"new"];
     
     BOOL unzipWorked = [SSZipArchive unzipFileAtPath:filePath toDestination:destination];
+    
+    if (!unzipWorked) {
+        
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"Problem" message:
+                              [NSString stringWithFormat:@"Wrong download parameters"]
+                              delegate:self cancelButtonTitle:@"Cancel"
+                              otherButtonTitles:nil];
+        
+        alert.tag = 99;
+        [alert show];
+        //        [alert release];
+        return;
+    }
     
     // now name the old www to
     //NSString* curRevision = [[NSUserDefaults standardUserDefaults] stringForKey:@"_currentRevision"];

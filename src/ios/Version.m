@@ -46,13 +46,25 @@ static bool firstCall = YES;
     }
 }
 
-- (void) updateTo: (CDVInvokedUrlCommand*)command
+- (void)handleOpenURL:(NSNotification*)notification
 {
-    NSArray* args = [[command.arguments objectAtIndex:0] componentsSeparatedByString:@","];
+    // override to handle urls sent to your app
+    // register your url schemes in your App-Info.plist
+    
+    NSURL* urlParam = [notification object];
+    
+    if ([urlParam isKindOfClass:[NSURL class]]) {
+        [dlg handleOpenURL:urlParam];
+    }
+}
+
+- (void) updateToVersion: (CDVInvokedUrlCommand*)command
+{
+    NSArray* args = [command.arguments objectAtIndex:0];
  
     NSString* remoteVersion = [args objectAtIndex:0];
     NSString* url = [NSString stringWithFormat:@"%@%@", [args objectAtIndex:1], remoteVersion];
-    //NSString* remoteChecksum = [args objectAtIndex:2];
+    NSString* remoteChecksum = [args objectAtIndex:2];
   
     [dlg pluginPullDataFromWeb:url];
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
