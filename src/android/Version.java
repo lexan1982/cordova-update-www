@@ -39,9 +39,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
-import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +50,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -62,11 +61,11 @@ import android.util.Log;
 */
 public class Version extends CordovaPlugin {
 	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-	 private String url;
-	 private String remoteVersion;
+	 public String url;
+	 public String remoteVersion;
 	 private String remoteChecksum;
 	 private String zipChecksum;
-	 private Activity activity;
+	 public Activity activity;
 	 
 	 private ProgressDialog mProgressDialog;
      private volatile boolean bulkEchoing;
@@ -146,12 +145,12 @@ public class Version extends CordovaPlugin {
     }
     
 
-    private void updateToVersion() {
-		
+    public void updateToVersion() {	
+				
     	activity.runOnUiThread(new Runnable() {
 
 			@Override
-			public void run() {
+			public void run() { 
 				 new DownloadFileAsync().execute(url);
 
 			}
@@ -195,7 +194,7 @@ public class Version extends CordovaPlugin {
 	
 	    		while ((count = input.read(data)) != -1) {
 	    			total += count;
-	    			publishProgress(""+(int)((total*100)/lenghtOfFile));
+	    			publishProgress(""+(int)((total*1024)/lenghtOfFile));
 	    			output.write(data, 0, count);
 	    		} 
 	
@@ -467,4 +466,6 @@ public class Version extends CordovaPlugin {
     //.setNegativeButton("Cancel", null)
     .show();
     }
+
+   
 }
