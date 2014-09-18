@@ -21,8 +21,8 @@
 
 cordova-update-www
 ------------------------
-
-This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project. Also it add url scheme to you APP and then we can start APP from another. href="myapp://"
+<code><a href="erw"></a></code>
+This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project. Also it add url scheme to you APP and then we can start APP from another.<b>href="myapp://"</b>
 
 ------------------------
 <b>Installation for Android</b> 
