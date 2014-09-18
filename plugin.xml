@@ -104,6 +104,9 @@
         <header-file src ="src/ios/VersionPluginDelegate.h" />
         <source-file src ="src/ios/VersionPluginDelegate.m" />
         
+        
+        <source-file src ="src/ios/MainViewController.m" />
+        
         <source-file src="src/ios/Version.m" />
         
         <framework src="libz.dylib" />
