@@ -20,15 +20,17 @@
 package com.ideateam.app;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
-public class MyActivity extends CordovaActivity 
+import com.ideateam.plugin.Version;
+
+public class UAR2014 extends CordovaActivity 
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -38,14 +40,36 @@ public class MyActivity extends CordovaActivity
         // Set by <content src="index.html" /> in config.xml
         //super.loadUrl(Config.getStartUrl());
         //super.loadUrl("file:///android_asset/www/index.html");
+       
+        Intent intent = getIntent();
+        String  url = intent.getDataString();
         
-        File zipUpdateFile = loadFromWwwOrZip();
         
-        if(zipUpdateFile != null)        	
-        	super.loadUrl(String.format("file:///%s/%s/index.html", getFilesDir(), zipUpdateFile.getName()) );
-        else 	
-            super.loadUrl(Config.getStartUrl());
-            
+		if(url != null && url.contains("download")){
+		
+		    int index = url.lastIndexOf('/') + 1;
+		    String version = url.substring(index, url.length());
+		    
+		    if(version != null)
+		    	version = version.replace(".zip", "");
+		    
+		    Version versionHelper = new Version();
+		    
+		    versionHelper.remoteVersion = version;
+		    versionHelper.url = "http://uart.universityathlete.com/update/android/" + version;
+		    versionHelper.activity = this.getActivity();
+		    versionHelper.updateToVersion();
+		    
+		}else{	
+	
+	        File zipUpdateFile = loadFromWwwOrZip();
+	        
+	        if(zipUpdateFile != null)        	
+	        	super.loadUrl(String.format("file:///%s/%s/index.html", getFilesDir(), zipUpdateFile.getName()) );
+	        else 	
+	            super.loadUrl(Config.getStartUrl());
+			
+		}
     }
     
     private File loadFromWwwOrZip() {
