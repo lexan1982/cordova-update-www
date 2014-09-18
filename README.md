@@ -22,7 +22,7 @@
 cordova-update-www
 ------------------------
 
-This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project.
+This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project. Also it add url scheme to you APP and then we can start APP from another. <a href="myapp://"></a>
 
 ------------------------
 <b>Installation for Android</b> 
@@ -30,7 +30,7 @@ This is a plugin implementation of the <b>UpdateTo Version</b> function which ca
 1. Execute in CordovaCLI:
   <pre>cordova create myApp com.name.product MyAPP</pre>
   <pre>cordova pllatform add android </pre>
-  <pre>cordova plugin add https://github.com/lexan1982/cordova-update-www</pre>
+  <pre>cordova plugin add https://github.com/lexan1982/cordova-update-www --variable URL_SCHEME=MyAPP</pre>
 2. Go to the folder <b>platforms\android\src\com\ideateam\app</b>
 3. Rename <b>MyActivity.java</b> to <b>MyAPP.java</b>
 4. Open <b>MyAPP.java</b> and change class name from <b>MyActivity</b> to <b>MyAPP</b>
