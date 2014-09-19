@@ -68,6 +68,7 @@
         <config-file target="config.xml" parent="/*">
             <feature name="Version">
                 <param name="ios-package" value="Version"/>
+                <param name="onload" value="true" />
             </feature>
         </config-file>
         <config-file target="*-Info.plist" parent="CFBundleURLTypes">
@@ -75,7 +76,7 @@
                 <dict>
                     <key>CFBundleURLSchemes</key>
                     <array>
-                        <string>uart</string>
+                        <string>$URL_SCHEME</string>
                     </array>
                 </dict>
             </array>
@@ -113,10 +114,7 @@
         
         <header-file src ="src/ios/VersionPluginDelegate.h" />
         <source-file src ="src/ios/VersionPluginDelegate.m" />
-        
-        
-        <source-file src ="src/ios/MainViewController.m" />
-        
+                
         <source-file src="src/ios/Version.m" />
         
         <framework src="libz.dylib" />
