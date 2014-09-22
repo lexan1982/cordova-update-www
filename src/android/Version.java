@@ -83,11 +83,10 @@ public class Version extends CordovaPlugin {
         	
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
  	       
- 	        String[] params = args.getString(0).split(",");
-        	 
- 	        this.remoteVersion = params[0];
- 	        this.url = params[1] + this.remoteVersion;
- 	        //this.remoteChecksum = params[2];
+ 	        JSONObject obj = new JSONObject(args.getString(0));
+        		
+        	this.remoteVersion = obj.getString("remoteVersion");
+        	this.url = obj.getString("url");
  	       
         	this.activity = this.cordova.getActivity();
         
