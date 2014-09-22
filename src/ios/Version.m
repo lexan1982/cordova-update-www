@@ -41,8 +41,8 @@ static VersionPluginDelegate* dlg;
         dlg = [[VersionPluginDelegate alloc] init];
         firstCall = NO;
         
-        AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-        appDlg.window.rootViewController = dlg.viewController;
+       // AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+       //appDlg.window.rootViewController = dlg.viewController;
     }
 }
 
@@ -52,6 +52,12 @@ static VersionPluginDelegate* dlg;
     // register your url schemes in your App-Info.plist
     
     NSURL* urlParam = [notification object];
+    AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    if (appDlg.window.rootViewController != dlg.viewController) {
+        
+        appDlg.window.rootViewController = dlg.viewController;
+    }
     
     if ([urlParam isKindOfClass:[NSURL class]]) {
         [dlg handleOpenURL:urlParam];
@@ -65,7 +71,12 @@ static VersionPluginDelegate* dlg;
     NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
     NSString* url = [ [args objectForKey:@"url"] stringByAppendingString: remoteVersion] ;
 
-  
+    AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    if (appDlg.window.rootViewController != dlg.viewController) {
+        
+        appDlg.window.rootViewController = dlg.viewController;
+    }
     [dlg pluginPullDataFromWeb:url];
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
     
