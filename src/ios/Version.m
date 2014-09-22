@@ -60,11 +60,11 @@ static bool firstCall = YES;
 
 - (void) updateTo: (CDVInvokedUrlCommand*)command
 {
-    NSArray* args = [command.arguments objectAtIndex:0];
+    NSMutableDictionary* args = [command.arguments objectAtIndex:0];
  
-    NSString* remoteVersion = [args objectAtIndex:0];
-    NSString* url = [NSString stringWithFormat:@"%@%@", [args objectAtIndex:1], remoteVersion];
-    NSString* remoteChecksum = [args objectAtIndex:2];
+    NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
+    NSString* url = [ [args objectForKey:@"url"] stringByAppendingString: remoteVersion] ;
+
   
     [dlg pluginPullDataFromWeb:url];
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
