@@ -58,12 +58,13 @@
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-  if (self.startFilePath.length > 0)
+  /*if (self.startFilePath.length > 0)
   {
     [self.webView stopLoading];      
     NSURLRequest *appReq = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:self.startFilePath] cachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:20.0];
     [self.webView loadRequest:appReq];
   }
+   */
 }
 
 - (void) viewDidUnload
