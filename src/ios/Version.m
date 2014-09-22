@@ -23,7 +23,7 @@
 
 @interface Version : CDVPlugin {
 
-    VersionPluginDelegate* dlg;
+    
 }
 
 @end
@@ -33,7 +33,7 @@
 @implementation Version
 
 static bool firstCall = YES;
-
+static VersionPluginDelegate* dlg;
 - (void)pluginInitialize
 {
     if (firstCall) {
