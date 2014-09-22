@@ -348,7 +348,7 @@
         return YES;
     }
     if ([myHost isEqualToString:@"download"]) {
-        [self startAnimation];
+        //[self startAnimation];
 
         NSArray *myurlparts = [mytempURL pathComponents];
         NSString *versionName = [myurlparts objectAtIndex:2];
@@ -546,6 +546,7 @@
 }
 
 - (void) pullDataFromWeb:(NSString*) srcFile {
+    [self startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
     
@@ -565,6 +566,8 @@
 }
 
 - (void) pluginPullDataFromWeb:(NSString*) srcFile {
+    
+    [self startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
     
