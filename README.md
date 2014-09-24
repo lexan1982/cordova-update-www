@@ -47,12 +47,17 @@ This is a plugin implementation of the <b>UpdateTo Version</b> function which ca
 ----------------------
 Call function <b>cordova.version</b> from js code with params:
 
-  <pre>cordova.version(callback, error, updateTo);</pre>
+  <pre>cordova.version(callback, error, params);</pre>
   
   <i>callback</i> - success function<br/>
   <i>error</i> - error function<br/>
-  <i>updateTo</i> - //"zipFileName, url, zipHash" ("'0.22-234', 'http://domain/update/android/',     
-                                                        '0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG'")
+  <i>params</i> - json object
+  <pre>
+  {
+    remoteVersion: '210',
+    url: 'http://mydomain/updates/'
+  }
+  </pre>
  	      
   
   <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">Cordova docs</a>
