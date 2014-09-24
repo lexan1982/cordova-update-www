@@ -151,7 +151,7 @@ public class Version extends CordovaPlugin {
 
 			@Override
 			public void run() { 
-				 new DownloadFileAsync().execute(url);
+				 new DownloadFileAsync().execute(url+remoteVersion);
 
 			}
 		});
