@@ -341,17 +341,16 @@ public class Version extends CordovaPlugin {
 			BufferedReader r = new BufferedReader(new InputStreamReader(fin));
 			
 			String line;
-	    	while ((line = r.readLine()) != null) {
-	    	   if(line.contains(" version: '")){
-	    		   
-	    		   int start = line.indexOf("'");
-	    		   int end = line.lastIndexOf("-");
-	    		   
-	    		   version = line.substring(start + 1, end);
-	    		   
-	    		   break;
-	    	   }
-	    	} 
+			while ((line = r.readLine()) != null) {
+		    	   if(line.indexOf("src=\"app.js?") != -1){
+		    		   int start = line.indexOf("?");
+		    		   int end = line.lastIndexOf("-");
+		    		   
+		    		   version = line.substring(start + 1, end);
+		    		   	    		   	    		   
+		    		   break; 
+		    	   }
+		    	} 
 	         
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -385,10 +384,7 @@ public class Version extends CordovaPlugin {
 	    		   int end = line.lastIndexOf("-");
 	    		   
 	    		   version = line.substring(start + 1, end);
-	    		   
-	    		   Log.d("uar2014","--------------------");
-	    		   Log.d("uar2014", version);
-	    		   
+	    		   	    		   	    		   
 	    		   break; 
 	    	   }
 	    	} 
