@@ -66,7 +66,7 @@ import com.ideaintech.app.UAR2015;
 */
 public class Version extends CordovaPlugin {
 	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-	 public String url;
+	 public String url = "http://uart.universityathlete.com/update/android/";
 	 public String remoteVersion;
 	 public String currentVersion;
 	 private String remoteChecksum;
@@ -94,13 +94,20 @@ public class Version extends CordovaPlugin {
         	
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
  	       
- 	        JSONObject obj = new JSONObject(args.getString(0));
-        		
-        	this.remoteVersion = obj.getString("remoteVersion");
-        	this.url = obj.getString("url");
- 	       
+    		if(!args.getString(0).equals("null")){
+    		
+	 	        JSONObject obj = new JSONObject(args.getString(0));
+	        		
+	        	this.remoteVersion = obj.getString("remoteVersion");
+	        	this.url = obj.getString("url");
+	        	
+    		}else{
+    			
+    			getRemoteVersion();
+    		}
+    		
         	this.activity = (UAR2015)this.cordova.getActivity();
-        
+         
         	updateToVersion();
         	
           // FIXME succes callback  
@@ -123,8 +130,7 @@ public class Version extends CordovaPlugin {
     }
     
 
-    public void updateToVersion() {	
-				
+    public void updateToVersion() {					
     	activity.runOnUiThread(new Runnable() {
 
 			@Override
@@ -508,7 +514,7 @@ public class Version extends CordovaPlugin {
 	            StrictMode.ThreadPolicy policy = new StrictMode.
 	              ThreadPolicy.Builder().permitAll().build();
 	            StrictMode.setThreadPolicy(policy); 
-	            URL url = new URL("http://uart.universityathlete.com/update/android/versionTest.html");
+	            URL url = new URL(this.url +"versionTest.html");
 
 	            HttpURLConnection con = (HttpURLConnection) url
 	              .openConnection();
