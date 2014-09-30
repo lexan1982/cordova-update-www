@@ -17,21 +17,26 @@
        under the License.
  */
 
-package com.ideateam.app;
+package com.ideaintech.app;
 
 import java.io.File;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaActivity;
 
+import android.R;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.ideateam.plugin.Version;
 
-public class MyActivity extends CordovaActivity 
+public class UAR2015 extends CordovaActivity 
 {
+	 Version versionHelper;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -44,6 +49,8 @@ public class MyActivity extends CordovaActivity
         Intent intent = getIntent();
         String  url = intent.getDataString();
         
+        versionHelper = new Version();   	 
+   	 	versionHelper.activity = (UAR2015)this.getActivity();
         
 		if(url != null && url.contains("download")){
 		
@@ -53,11 +60,9 @@ public class MyActivity extends CordovaActivity
 		    if(version != null)
 		    	version = version.replace(".zip", "");
 		    
-		    Version versionHelper = new Version();
 		    
 		    versionHelper.remoteVersion = version;
 		    versionHelper.url = "http://uart.universityathlete.com/update/android/" + version;
-		    versionHelper.activity = this.getActivity();
 		    versionHelper.updateToVersion();
 		    
 		}else{	
@@ -70,6 +75,8 @@ public class MyActivity extends CordovaActivity
 	            super.loadUrl(Config.getStartUrl());
 			
 		}
+		
+		checkForUpdates();
     }
     
     private File loadFromWwwOrZip() {
@@ -94,5 +101,33 @@ public class MyActivity extends CordovaActivity
     	}
 		return wwwFolder; 
 	} 
+    
+    private void checkForUpdates(){    	
+		 versionHelper.checkForUpdates();		    	
+    }
+    
+    public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
+    {
+    	
+    	new AlertDialog.Builder(this)
+        .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
+        .setTitle("Update Available")
+        .setMessage(String.format("%s\nCurrent version: %s\nUpdate to: %s",updateNote, currentVersion, remoteVersion))
+        .setPositiveButton("Update Now", new DialogInterface.OnClickListener()
+	    {
+	        @Override
+	        public void onClick(DialogInterface dialog, int which) {
+	        	//startDownload(baseUrl + remoteVersion);
+	        	Log.d("uar2014", "startDownload");
+	        	
+	        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
+	        	versionHelper.syncBeforeUpdate();
+	        	//versionHelper.updateToVersion();
+	        }
+
+	    })
+    .setNegativeButton("Cancel", null)
+    .show();
+    }
 }
 

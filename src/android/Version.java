@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -40,7 +41,6 @@ import java.util.zip.ZipInputStream;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,11 +51,15 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.util.Base64;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
+
+import com.ideaintech.app.UAR2015;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
@@ -64,9 +68,14 @@ public class Version extends CordovaPlugin {
 	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 	 public String url;
 	 public String remoteVersion;
+	 public String currentVersion;
 	 private String remoteChecksum;
+	 private String updateChecksum;
+	 private String updateNote;
 	 private String zipChecksum;
-	 public Activity activity;
+	 public UAR2015 activity;
+	 
+	 private long timestamp;
 	 
 	 private ProgressDialog mProgressDialog;
      private volatile boolean bulkEchoing;
@@ -89,56 +98,23 @@ public class Version extends CordovaPlugin {
         	this.remoteVersion = obj.getString("remoteVersion");
         	this.url = obj.getString("url");
  	       
-        	this.activity = this.cordova.getActivity();
+        	this.activity = (UAR2015)this.cordova.getActivity();
         
         	updateToVersion();
         	
           // FIXME succes callback  
           //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
-        } else if(action.equals("echoAsync")) {
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, args.optString(0)));
-                }
-            });
-        } else if(action.equals("echoArrayBuffer")) {
-            String data = args.optString(0);
-            byte[] rawData= Base64.decode(data, Base64.DEFAULT);
-            callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, rawData));
-        } else if(action.equals("echoArrayBufferAsync")) {
-            cordova.getThreadPool().execute(new Runnable() {
-                public void run() {
-                    String data = args.optString(0);
-                    byte[] rawData= Base64.decode(data, Base64.DEFAULT);
-                    callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, rawData));
-                }
-            });
-        } else if(action.equals("echoMultiPart")) {
-            callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, args.getJSONObject(0)));
-        } else if(action.equals("stopEchoBulk")) {
-            bulkEchoing = false;
-        } else if(action.equals("echoBulk")) {
-            if (bulkEchoing) {
-                return true;
-            }
-            final String payload = args.getString(0);
-            final int delayMs = args.getInt(1);
-            bulkEchoing = true;
-            cordova.getThreadPool().execute(new Runnable() {
-                public void run() {
-                    while (bulkEchoing) {
-                        try {
-                            Thread.sleep(delayMs);
-                        } catch (InterruptedException e) {}
-                        PluginResult pr = new PluginResult(PluginResult.Status.OK, payload);
-                        pr.setKeepCallback(true);
-                        callbackContext.sendPluginResult(pr);
-                    }
-                    PluginResult pr = new PluginResult(PluginResult.Status.OK, payload);
-                    callbackContext.sendPluginResult(pr);
-                }
-            });
-        } else {
+        }else if (action.equals("echo")) {
+        	
+        	//if we get response try sync, else - build is not work
+        	if(System.currentTimeMillis() - timestamp < 1000){
+        		Log.d("uar2014", "..syncBeforeUpdate");
+        		activity.sendJavascript("UART.controller.IosAppUpdateController.syncBeforeUpdate()");        		
+        	}else{
+        		updateToVersion();
+        	}
+        }
+        else {
             return false;
         }
         return true;
@@ -328,21 +304,25 @@ public class Version extends CordovaPlugin {
 		// TODO Auto-generated method stub
     	 
     	File[] f = activity.getFilesDir().listFiles();
-    	
+    	    	
     	File wwwFolder = null;
     	
     	if(f != null && f.length > 0){
-	    	wwwFolder = f[0] ;
-			
+	    				
 			for(int i = 0; i < f.length; i++){
+				if(wwwFolder == null && !f[i].getName().equals("Documents"))
+				{	wwwFolder = f[i] ;
+					continue;
+				}
 				
-				if(wwwFolder.lastModified() < f[i].lastModified()){			
+				if(wwwFolder != null && wwwFolder.lastModified() < f[i].lastModified()){			
 					wwwFolder = f[i];
 				}
 			}
     	}
 		return wwwFolder; 
-	}
+	} 
+    
     private String getCurrentVersionZip(File wwwFolder){
     	String version = null;
     			
@@ -392,14 +372,16 @@ public class Version extends CordovaPlugin {
 	    	
 			String line;
 	    	while ((line = r.readLine()) != null) {
-	    	   if(line.contains(" version: '")){
-	    		   
-	    		   int start = line.indexOf("'");
+	    	   if(line.indexOf("src=\"app.js?") != -1){
+	    		   int start = line.indexOf("?");
 	    		   int end = line.lastIndexOf("-");
 	    		   
 	    		   version = line.substring(start + 1, end);
 	    		   
-	    		   break;
+	    		   Log.d("uar2014","--------------------");
+	    		   Log.d("uar2014", version);
+	    		   
+	    		   break; 
 	    	   }
 	    	} 
 	    	
@@ -467,5 +449,113 @@ public class Version extends CordovaPlugin {
     .show();
     }
 
-   
+	public void checkForUpdates(){
+		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+		   @Override
+		   public void run() {
+			   //activity.sendJavascript("UART.system.Helper.fromNative()");
+			   getVersion();			   
+		   }
+		 }, 10000);
+				
+	}
+	
+	public void getVersion(){
+		
+		if(isOnline())
+        {
+    		Log.d("uar2014", "isOnline "); 
+    		
+    		File zipUpdateFile = loadFromWwwOrZip();
+    		
+        	if(zipUpdateFile != null)
+        		currentVersion = getCurrentVersionZip(zipUpdateFile);
+        	else
+        		currentVersion = getCurrentVersionWWW();
+        		        
+	        getRemoteVersion();   	        
+						
+			if(!currentVersion.equals(remoteVersion)){
+				
+		//		Log.d("uar2014", "!Need UPDATE");				
+			   
+			    activity.showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
+			}
+			
+        }
+        else
+        {
+        	Log.d("uar2014", "No internet connection");
+        }
+	}
+	
+	public boolean isOnline() {
+        ConnectivityManager cm =
+            (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+	}
+	 private void getRemoteVersion() {
+	    	
+	        try {
+	            StrictMode.ThreadPolicy policy = new StrictMode.
+	              ThreadPolicy.Builder().permitAll().build();
+	            StrictMode.setThreadPolicy(policy); 
+	            URL url = new URL("http://uart.universityathlete.com/update/android/versionTest.html");
+
+	            HttpURLConnection con = (HttpURLConnection) url
+	              .openConnection();
+
+	            readRemoteVersion(con.getInputStream());
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	      
+	    }   
+	 private String readRemoteVersion(InputStream in) {
+	      BufferedReader reader = null;
+	      String version = "";
+	      try {
+	    	String line = "";
+	        reader = new BufferedReader(new InputStreamReader(in));
+	        
+	        while ((line = reader.readLine()) != null) {
+	        	version += line; 
+	        }
+	       
+	       version = version.replace("|",";");
+	       String[] arr =  version.split(";");
+	     
+	       
+	       remoteVersion  = arr[0];
+	       updateChecksum = arr[2].toUpperCase();
+	       updateNote 	  = arr[3];
+	       
+	        
+	      } catch (IOException e) {
+	        e.printStackTrace();
+	      } finally {
+	        if (reader != null) {
+	          try {
+	            reader.close();
+	          } catch (IOException e) {
+	            e.printStackTrace();
+	          }
+	        }
+	      }
+	      return version;
+	    } 
+	  
+	 public void syncBeforeUpdate(){
+		 timestamp = System.currentTimeMillis();
+		 activity.sendJavascript("UART.controller.IosAppUpdateController.echo()");
+		 
+	 }
+
 }
