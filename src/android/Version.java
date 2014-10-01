@@ -471,7 +471,7 @@ public class Version extends CordovaPlugin {
 		   @Override
 		   public void run() {
 			   //activity.sendJavascript("UART.system.Helper.fromNative()");
-			   getVersion(false);			   
+			   getVersion(true);			   
 		   }
 		 }, 10000);
 				
