@@ -110,35 +110,43 @@ public class MyActivity extends CordovaActivity
     public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
     {
     	  	
-    	String message;
+    Builder builder = new AlertDialog.Builder(this)
+        .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
+        .setTitle("Update Available");
     	
     	if(currentVersion == null){
-    		message = updateNote;
+    		
+    		builder.setMessage(updateNote).setPositiveButton("OK", new DialogInterface.OnClickListener()
+			{
+			    @Override
+			    public void onClick(DialogInterface dialog, int which) {
+			        	//startDownload(baseUrl + remoteVersion);
+			        	
+				}
+	
+		    });
+    		
     	}else{
-    		message = String.format("%s\nCurrent version: %s\nUpdate to: %s", updateNote, currentVersion, remoteVersion);
+    		builder.setMessage(String.format("%s\nCurrent version: %s\nUpdate to: %s", updateNote, currentVersion, remoteVersion))
+    		.setPositiveButton("Update Now", new DialogInterface.OnClickListener()
+			{
+			        @Override
+			        public void onClick(DialogInterface dialog, int which) {
+			        	//startDownload(baseUrl + remoteVersion);
+			        	Log.d("uar2014", "startDownload");
+			        	
+			        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
+			        	versionHelper.syncBeforeUpdate();			        	
+				        	
+				}
+	
+		    })
+		    .setNegativeButton("Cancel", null);
+    		
     	}
     	
-    	
-    	
-    	Builder builder = new AlertDialog.Builder(this)
-        .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
-        .setTitle("Update Available")
-        .setMessage(message)
-        .setPositiveButton("Update Now", new DialogInterface.OnClickListener()
-	    {
-	        @Override
-	        public void onClick(DialogInterface dialog, int which) {
-	        	//startDownload(baseUrl + remoteVersion);
-	        	Log.d("uar2014", "startDownload");
-	        	
-	        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
-	        	versionHelper.syncBeforeUpdate();
-	        	
-	        	
-	        }
-
-	    })
-	    .setNegativeButton("Cancel", null);
+        
+        
     
     	
     	if(dialog == null || !dialog.isShowing())
