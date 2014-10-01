@@ -106,14 +106,24 @@ public class MyActivity extends CordovaActivity
     private void checkForUpdates(){    	
 		 versionHelper.checkForUpdates();		    	
     }
-    
+    private Boolean dialogObserver = false;
     public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
     {
+    	if(dialogObserver)
+    		return;
+    	
+    	String message;
+    	
+    	if(currentVersion == null){
+    		message = updateNote;
+    	}else{
+    		message = String.format("%s\nCurrent version: %s\nUpdate to: %s", updateNote, currentVersion, remoteVersion);
+    	}
     	
     	new AlertDialog.Builder(this)
         .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
         .setTitle("Update Available")
-        .setMessage(String.format("%s\nCurrent version: %s\nUpdate to: %s",updateNote, currentVersion, remoteVersion))
+        .setMessage(message)
         .setPositiveButton("Update Now", new DialogInterface.OnClickListener()
 	    {
 	        @Override
@@ -123,12 +133,23 @@ public class MyActivity extends CordovaActivity
 	        	
 	        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
 	        	versionHelper.syncBeforeUpdate();
-	        	//versionHelper.updateToVersion();
+	        	
+	        	dialogObserver = false;
 	        }
 
 	    })
-    .setNegativeButton("Cancel", null)
+    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {      	
+        	
+        	dialogObserver = false;
+        }
+
+    })
     .show();
+     dialogObserver = true;
+    
     }
 }
 
