@@ -35,7 +35,6 @@ import com.ideateam.plugin.Version;
 
 public class MyActivity extends CordovaActivity 
 {
-{
 	 Version versionHelper;
 	 public long timestamp;
 	
@@ -132,5 +131,4 @@ public class MyActivity extends CordovaActivity
     .show();
     }
 }
-
 
