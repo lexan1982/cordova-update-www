@@ -46,7 +46,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -57,7 +56,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.util.Log;
 
 import com.ideaintech.app.UAR2015;
 
@@ -89,7 +87,7 @@ public class Version extends CordovaPlugin {
      */
     @SuppressLint("NewApi") 
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-        Log.d("uar2014", "------action " + action);
+    
     	if (action.equals("updateTo")) {
         	
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
@@ -116,7 +114,7 @@ public class Version extends CordovaPlugin {
         	this.activity = (UAR2015)this.cordova.getActivity();
         	//if we get response try sync, else - build is not work
         	if(System.currentTimeMillis() - activity.timestamp < 1000){
-        		Log.d("uar2014", "..syncBeforeUpdate");
+       
         		
         		activity.sendJavascript("UART.system.Helper.syncBeforeUpdate()");        		
         	}else{
@@ -480,8 +478,7 @@ public class Version extends CordovaPlugin {
 	public void getVersion(Boolean isBackground){
 		
 		if(isOnline())
-        {
-    		Log.d("uar2014", "..isOnline "); 
+        {   	
     		
     		File zipUpdateFile = loadFromWwwOrZip();
     		
@@ -493,8 +490,7 @@ public class Version extends CordovaPlugin {
 	        getRemoteVersion();   	        
 						
 			if(!currentVersion.equals(remoteVersion)){
-				
-		//		Log.d("uar2014", "!Need UPDATE");				
+					
 			   
 			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
 			}else if(!isBackground){
@@ -504,7 +500,7 @@ public class Version extends CordovaPlugin {
         }
         else
         {
-        	Log.d("uar2014", "No internet connection");
+     
         }
 	}
 	
