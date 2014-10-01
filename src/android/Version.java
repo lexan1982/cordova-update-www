@@ -123,13 +123,24 @@ public class Version extends CordovaPlugin {
         		updateToVersion();
         	}
         }
+        else if (action.equals("isUpdate")) {
+        	getVersion(false);
+        }
         else {
             return false;
         }
         return true;
     }
     
-
+	@Override
+	public void onResume(boolean multitasking) {
+		// TODO Auto-generated method stub
+		super.onResume(multitasking);
+		
+		getVersion(true);
+		
+	}
+	
     public void updateToVersion() {					
     	activity.runOnUiThread(new Runnable() {
 
@@ -460,17 +471,17 @@ public class Version extends CordovaPlugin {
 		   @Override
 		   public void run() {
 			   //activity.sendJavascript("UART.system.Helper.fromNative()");
-			   getVersion();			   
+			   getVersion(false);			   
 		   }
 		 }, 10000);
 				
 	}
 	
-	public void getVersion(){
+	public void getVersion(Boolean isBackground){
 		
 		if(isOnline())
         {
-    		Log.d("uar2014", "isOnline "); 
+    		Log.d("uar2014", "..isOnline "); 
     		
     		File zipUpdateFile = loadFromWwwOrZip();
     		
@@ -485,7 +496,9 @@ public class Version extends CordovaPlugin {
 				
 		//		Log.d("uar2014", "!Need UPDATE");				
 			   
-			   ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
+			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
+			}else if(!isBackground){
+				((UAR2015) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
 			}
 			
         }
@@ -495,7 +508,11 @@ public class Version extends CordovaPlugin {
         }
 	}
 	
-	public boolean isOnline() {
+	public boolean isOnline() { 
+		
+		if(this.activity ==  null)
+			this.activity = (UAR2015)this.cordova.getActivity();
+		
         ConnectivityManager cm =
             (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
