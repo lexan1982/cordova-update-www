@@ -35,7 +35,7 @@ import com.ideateam.plugin.Version;
 
 public class MyActivity extends CordovaActivity 
 {
- Version versionHelper;
+ 	 Version versionHelper;
 	 public long timestamp;
 	
     @Override
@@ -109,8 +109,8 @@ public class MyActivity extends CordovaActivity
     AlertDialog dialog;
     public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
     {
-    	  	
-    Builder builder = new AlertDialog.Builder(this)
+    
+    	Builder builder = new AlertDialog.Builder(this)
         .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
         .setTitle("Update Available");
     	
@@ -133,25 +133,17 @@ public class MyActivity extends CordovaActivity
 			        @Override
 			        public void onClick(DialogInterface dialog, int which) {
 			        	//startDownload(baseUrl + remoteVersion);
-			        	Log.d("uar2014", "startDownload");
-			        	
+			        				        	
 			        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
-			        	versionHelper.syncBeforeUpdate();			        	
-				        	
+			        	versionHelper.syncBeforeUpdate();	
 				}
 	
 		    })
-		    .setNegativeButton("Cancel", null);
-    		
+		    .setNegativeButton("Cancel", null);    		
     	}
-    	
-        
-        
-    
     	
     	if(dialog == null || !dialog.isShowing())
     		dialog = builder.show();
-    	  		
-    
+    	  		    
     }
 }
