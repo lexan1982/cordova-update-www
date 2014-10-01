@@ -157,11 +157,10 @@ public class Version extends CordovaPlugin {
     	protected void onPreExecute() {
     		super.onPreExecute();
     		mProgressDialog = new ProgressDialog(activity);
-			mProgressDialog.setMessage("Downloading file..");
+			mProgressDialog.setMessage("Downloading file...");
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			mProgressDialog.setCancelable(false);
 			mProgressDialog.show();
-    		
     		
     	}
 
@@ -178,6 +177,7 @@ public class Version extends CordovaPlugin {
 	    	int lenghtOfFile = conexion.getContentLength();
 	    
 	    	mProgressDialog.setMax(lenghtOfFile/1024);
+	    	
 	    	InputStream input = new BufferedInputStream(url.openStream());	
 	    	FileOutputStream output = activity.openFileOutput(String.format("%s.zip", remoteVersion), Context.MODE_PRIVATE);
 	
@@ -187,7 +187,7 @@ public class Version extends CordovaPlugin {
 	
 	    		while ((count = input.read(data)) != -1) {
 	    			total += count;
-	    			publishProgress(""+(int)((total*1024)/lenghtOfFile));
+	    			publishProgress(""+(int)(total / 1024));
 	    			output.write(data, 0, count);
 	    		} 
 	
@@ -204,7 +204,7 @@ public class Version extends CordovaPlugin {
 
     	}
     	protected void onProgressUpdate(String... progress) {
-
+   
     		 mProgressDialog.setProgress(Integer.parseInt(progress[0]));
     	}
 
