@@ -24,8 +24,8 @@ import java.io.File;
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaActivity;
 
-import android.R;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,7 +35,7 @@ import com.ideateam.plugin.Version;
 
 public class MyActivity extends CordovaActivity 
 {
-	 Version versionHelper;
+ Version versionHelper;
 	 public long timestamp;
 	
     @Override
@@ -106,12 +106,10 @@ public class MyActivity extends CordovaActivity
     private void checkForUpdates(){    	
 		 versionHelper.checkForUpdates();		    	
     }
-    private Boolean dialogObserver = false;
+    AlertDialog dialog;
     public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
     {
-    	if(dialogObserver)
-    		return;
-    	
+    	  	
     	String message;
     	
     	if(currentVersion == null){
@@ -120,7 +118,9 @@ public class MyActivity extends CordovaActivity
     		message = String.format("%s\nCurrent version: %s\nUpdate to: %s", updateNote, currentVersion, remoteVersion);
     	}
     	
-    	new AlertDialog.Builder(this)
+    	
+    	
+    	Builder builder = new AlertDialog.Builder(this)
         .setIcon(this.getApplicationContext().getResources().getDrawable(this.getApplicationContext().getResources().getIdentifier("icon", "drawable", this.getApplicationContext().getPackageName())))
         .setTitle("Update Available")
         .setMessage(message)
@@ -134,22 +134,16 @@ public class MyActivity extends CordovaActivity
 	        	versionHelper.url = "http://uart.universityathlete.com/update/android/";
 	        	versionHelper.syncBeforeUpdate();
 	        	
-	        	dialogObserver = false;
+	        	
 	        }
 
 	    })
-    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-    {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {      	
-        	
-        	dialogObserver = false;
-        }
-
-    })
-    .show();
-     dialogObserver = true;
+	    .setNegativeButton("Cancel", null);
+    
+    	
+    	if(dialog == null || !dialog.isShowing())
+    		dialog = builder.show();
+    	  		
     
     }
 }
-
