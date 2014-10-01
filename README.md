@@ -22,6 +22,57 @@
 cordova-update-www
 ------------------------
 
+Get current and remote version in the native code.
+  1. Current version get from file index.html parse script src
+<code><script type="text/javascript" src="app.js?0.22-544-gd096e48"></script></code>
+  2. Remote version get from server in this format (new version and note)
+<code>0.22-537|0.22-537|This version contains feature updates</code>
+
+If the versions do not equal show native dialog with:
+<code>
+title:    "Update Available"
+note:     "This version contains feature updates"
+current:  "Current version: 0.22-535"
+remote:   "Update to: 0.22-537"
+
+buttons: "Update Now"  "Cancel"
+
+</code>
+
+If user tap "Update Now" we must first of all Sync evals to the server and only then update version.
+
+And in this step maybe: 
+  1. builds is OK and we need Sync
+  2. build is broken and we cann't call JS method
+  
+So we do test request to the JS 
+<code> 
+  activity.sendJavascript("UART.system.Helper.echo()");
+</code>
+
+this is method do callback to the native
+<code>
+   cordova.version(null, null, 'echo')
+</code>
+
+and if we get response during 1 second we call JS from native to do Sync
+
+<code> 
+  activity.sendJavascript("UART.system.Helper.syncBeforeUpdate()");
+</code>
+
+after Sync was completed JS will call native 
+<code>
+  cordova.version(null, null, 'updateTo');
+</code>
+
+and download zip with new version
+  
+
+
+
+
+
 This is a plugin implementation of the <b>UpdateTo Version</b> function which can download zip from url and replace <b>www</b> folder at the Cordova project. Also it add url scheme to you APP and then we can start APP from another with zip to download as param -  <b>href="myapp://download/version007.zip"</b>
 
 ------------------------
@@ -47,17 +98,11 @@ This is a plugin implementation of the <b>UpdateTo Version</b> function which ca
 ----------------------
 Call function <b>cordova.version</b> from js code with params:
 
-  <pre>cordova.version(callback, error, params);</pre>
+  <pre>cordova.version(callback, error, 'isUpdate');</pre>
   
   <i>callback</i> - success function<br/>
   <i>error</i> - error function<br/>
-  <i>params</i> - json object
-  <pre>
-  {
-    remoteVersion: '210',
-    url: 'http://mydomain/updates/'
-  }
-  </pre>
+  <i>action</i>
  	      
   
   <a href="http://cordova.apache.org/docs/en/3.5.0/guide_hybrid_plugins_index.md.html#Plugin%20Development%20Guide">Cordova docs</a>
