@@ -176,7 +176,8 @@ public class Version extends CordovaPlugin {
 	
 	    	int lenghtOfFile = conexion.getContentLength();
 	    
-	    	mProgressDialog.setMax(lenghtOfFile/1024);
+	    	if(lenghtOfFile > 0)
+	    		mProgressDialog.setMax(lenghtOfFile/1024);
 	    	
 	    	InputStream input = new BufferedInputStream(url.openStream());	
 	    	FileOutputStream output = activity.openFileOutput(String.format("%s.zip", remoteVersion), Context.MODE_PRIVATE);
