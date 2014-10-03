@@ -107,7 +107,7 @@ public class Version extends CordovaPlugin {
     		
         	this.activity = (UAR2015)this.cordova.getActivity();
          
-        	if(remoteVersion != null)
+        	if(remoteVersion == null)
         		return false;
         	else			
         		updateToVersion();
