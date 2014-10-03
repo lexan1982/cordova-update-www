@@ -107,7 +107,7 @@ public class Version extends CordovaPlugin {
     		
         	this.activity = (UAR2015)this.cordova.getActivity();
          
-        	if(remoteVersion.equals(null))
+        	if(remoteVersion != null)
         		return false;
         	else			
         		updateToVersion();
@@ -483,7 +483,7 @@ public class Version extends CordovaPlugin {
 	
 	public void getVersion(Boolean isBackground){
 		
-		if(isOnline() && !remoteVersion.equals(null))
+		if(isOnline() && remoteVersion != null)
         {   	
     		
     		File zipUpdateFile = loadFromWwwOrZip();
