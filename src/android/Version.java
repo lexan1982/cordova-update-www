@@ -89,7 +89,7 @@ public class Version extends CordovaPlugin {
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
     
     	if (action.equals("updateTo")) {
-        	
+    		remoteVersion = updateChecksum = updateNote = null; 
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
  	       
     		if(!args.getString(0).equals("null")){
@@ -102,26 +102,31 @@ public class Version extends CordovaPlugin {
     		}else{
     			
     			getRemoteVersion();
+    			
     		}
     		
         	this.activity = (UAR2015)this.cordova.getActivity();
          
-        	updateToVersion();
+        	if(remoteVersion.equals(null))
+        		return false;
+        	else			
+        		updateToVersion();
         	
           // FIXME succes callback  
           //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
         }else if (action.equals("echo")) {
         	this.activity = (UAR2015)this.cordova.getActivity();
         	//if we get response try sync, else - build is not work
-        	if(System.currentTimeMillis() - activity.timestamp < 1000){
-       
+        	if(System.currentTimeMillis() - activity.timestamp < 1000){       
         		
-        		activity.sendJavascript("UART.system.Helper.syncBeforeUpdate()");        		
+        		activity.sendJavascript("UART.system.Helper.syncBeforeUpdate()");   
+        		
         	}else{
         		updateToVersion();
         	}
         }
         else if (action.equals("isUpdate")) {
+        	remoteVersion = updateChecksum = updateNote = null; 
         	getVersion(false);
         }
         else {
@@ -478,7 +483,7 @@ public class Version extends CordovaPlugin {
 	
 	public void getVersion(Boolean isBackground){
 		
-		if(isOnline())
+		if(isOnline() && !remoteVersion.equals(null))
         {   	
     		
     		File zipUpdateFile = loadFromWwwOrZip();
@@ -550,11 +555,12 @@ public class Version extends CordovaPlugin {
 	       version = version.replace("|",";");
 	       String[] arr =  version.split(";");
 	     
-	        
-	       remoteVersion  = arr[0];
-	       updateChecksum = arr[2].toUpperCase();
-	       updateNote 	  = arr[3];
-	       
+	       if(arr.length == 3 || arr.length == 4) //fix for not free WiFi
+	       {
+	    	    remoteVersion  = arr[0];
+	       		updateChecksum = arr[2].toUpperCase();
+	       		updateNote 	  = arr[3];
+	       }
 	         
 	      } catch (IOException e) {
 	        e.printStackTrace();
