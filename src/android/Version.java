@@ -92,7 +92,7 @@ public class Version extends CordovaPlugin {
     		remoteVersion = updateChecksum = updateNote = null; 
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
  	       
-    		if(!args.getString(0).equals("null")){
+    		if(!args.getString(0).equals("null")){ 
     		
 	 	        JSONObject obj = new JSONObject(args.getString(0));
 	        		
@@ -127,10 +127,11 @@ public class Version extends CordovaPlugin {
         }
         else if (action.equals("isUpdate")) {
         	remoteVersion = updateChecksum = updateNote = null; 
+        	getRemoteVersion();
         	getVersion(false);
         }
         else {
-            return false;
+            return false; 
         }
         return true;
     }
