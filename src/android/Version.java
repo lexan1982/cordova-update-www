@@ -484,7 +484,7 @@ public class Version extends CordovaPlugin {
 	
 	public void getVersion(Boolean isBackground){
 		
-		if(isOnline() && remoteVersion != null)
+		if(isOnline())
         {   	
     		
     		File zipUpdateFile = loadFromWwwOrZip();
