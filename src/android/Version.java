@@ -57,6 +57,7 @@ import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
@@ -608,13 +609,17 @@ public class Version extends CordovaPlugin {
 	 public void writeLocaleToFile(String fileName, String msg){
 		 Context context = this.cordova.getActivity().getApplicationContext();
 	        try {
-	        	String path = context.getFilesDir()+"/Documents/" + fileName;
+	        	String path = Environment.getExternalStorageDirectory().getAbsolutePath() +"/UAR2015/" + fileName;
 	        	
 	        	 
 	        	 File file = new File(path);
 	        	 
-	        	 if(!file.exists())
+	        	 if(!file.exists()){
+	        		 File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/UAR2015/");
+	        		 f.mkdirs();
 	        		 file.createNewFile();
+	        		 
+	        	 }
 	        	 
 	        	 BufferedWriter buf = new BufferedWriter(new FileWriter(file, true)); 
 	             buf.append(msg);
