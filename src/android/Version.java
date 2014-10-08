@@ -22,10 +22,12 @@ package com.ideateam.plugin;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,6 +43,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +59,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.util.Log;
 
 import com.ideaintech.app.UAR2015;
 
@@ -72,8 +76,8 @@ public class Version extends CordovaPlugin {
 	 private String updateNote;
 	 private String zipChecksum;
 	 public UAR2015 activity;
-	 
-	 
+	 final private String TAG = "CordovaPlugin";
+	 private CallbackContext callbackContext;
 	 
 	 private ProgressDialog mProgressDialog;
 
@@ -87,7 +91,7 @@ public class Version extends CordovaPlugin {
      */
     @SuppressLint("NewApi") 
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-    
+    	this.callbackContext = callbackContext;
     	if (action.equals("updateTo")) {
     		remoteVersion = updateChecksum = updateNote = null; 
         	//args ['0.22-234','http://domain/update/android/','0WE34DEYJRYBVXR4521DSFHTRHf44r4rCDVHERG']
@@ -129,6 +133,24 @@ public class Version extends CordovaPlugin {
         	remoteVersion = updateChecksum = updateNote = null; 
         	getRemoteVersion();
         	getVersion(false);
+        }
+        else if (action.equals("writeToFile")) {
+        	
+        	JSONObject obj = new JSONObject(args.getString(0));
+    		
+        	final String fileName = obj.getString("fileName");
+        	final String msg = obj.getString("msg");
+        	
+        	if(fileName != null && fileName.length() > 0 && msg != null && msg.length() > 0){
+        		
+        		cordova.getActivity().runOnUiThread(new Runnable() {
+        			  public void run() {
+        				  writeLocaleToFile(fileName, msg);         	
+        			     }
+        		});
+        		return true;     
+        	}
+        	
         }
         else {
             return false; 
@@ -580,6 +602,29 @@ public class Version extends CordovaPlugin {
 	 public void syncBeforeUpdate(){
 		 activity.timestamp = System.currentTimeMillis();
 		 activity.sendJavascript("UART.system.Helper.echo()");
+		 
+	 }
+	 
+	 public void writeLocaleToFile(String fileName, String msg){
+		 Context context = this.cordova.getActivity().getApplicationContext();
+	        try {
+	        	String path = context.getFilesDir()+"/Documents/" + fileName;
+	        	
+	        	 
+	        	 File file = new File(path);
+	        	 
+	        	 if(!file.exists())
+	        		 file.createNewFile();
+	        	 
+	        	 BufferedWriter buf = new BufferedWriter(new FileWriter(file, true)); 
+	             buf.append(msg);
+	             buf.newLine();
+	             buf.close();
+	             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "writed to file"));
+	             
+	        } catch (IOException e) {
+	            Log.d(TAG, e.getMessage());
+	        }
 		 
 	 }
 
