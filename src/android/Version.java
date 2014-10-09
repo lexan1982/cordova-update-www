@@ -136,7 +136,7 @@ public class Version extends CordovaPlugin {
         	getVersion(false);
         }
         else if (action.equals("writeToFile")) {
-        	
+        	this.activity = (UAR2015)this.cordova.getActivity();
         	JSONObject obj = new JSONObject(args.getString(0));
     		
         	final String fileName = obj.getString("fileName");
@@ -607,7 +607,7 @@ public class Version extends CordovaPlugin {
 	 }
 	 
 	 public void writeLocaleToFile(String fileName, String msg){
-		 Context context = this.cordova.getActivity().getApplicationContext();
+		
 	        try {
 	        	String path = Environment.getExternalStorageDirectory().getAbsolutePath() +"/UAR2015/" + fileName;
 	        	
@@ -625,7 +625,8 @@ public class Version extends CordovaPlugin {
 	             buf.append(msg);
 	             buf.newLine();
 	             buf.close();
-	             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "writed to file"));
+	            // callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "writed to file"));
+	             activity.sendJavascript("UART.system.Helper.callBackPlugin('ok')");   
 	             
 	        } catch (IOException e) {
 	            Log.d(TAG, e.getMessage());
