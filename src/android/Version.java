@@ -144,7 +144,7 @@ public class Version extends CordovaPlugin {
         	
         	if(fileName != null && fileName.length() > 0 && msg != null && msg.length() > 0){
         		
-        		cordova.getActivity().runOnUiThread(new Runnable() {
+        		cordova.getThreadPool().execute(new Runnable() {
         			  public void run() {
         				  writeLocaleToFile(fileName, msg);         	
         			     }
@@ -626,6 +626,7 @@ public class Version extends CordovaPlugin {
 	             buf.newLine();
 	             buf.close();
 	            // callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, "writed to file"));
+	             Log.d(TAG, "..callBackPlugin");
 	             activity.sendJavascript("UART.system.Helper.callBackPlugin('ok')");   
 	             
 	        } catch (IOException e) {
