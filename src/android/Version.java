@@ -524,7 +524,10 @@ public class Version extends CordovaPlugin {
 			   
 			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
 			}else if(!isBackground){
-				((UAR2015) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
+				if(remoteVersion != null)
+					((UAR2015) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
+				else 
+					((UAR2015) activity).showConfirmDialogForUpdate("Can not get remote version", null, null);
 			}
 			
         }
