@@ -519,7 +519,7 @@ public class Version extends CordovaPlugin {
         		        
 	        getRemoteVersion();   	        
 						
-			if(!currentVersion.equals(remoteVersion)){
+			if(remoteVersion != null && !currentVersion.equals(remoteVersion)){
 					
 			   
 			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
