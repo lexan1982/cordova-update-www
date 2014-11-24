@@ -96,7 +96,7 @@
         <source-file src ="src/ios/zip.c" target-dir="minizip" />
         <header-file src ="src/ios/zip.h" target-dir="minizip" />
 
- 	<header-file src ="src/ios/DDFileReader.h" />
+ 	      <header-file src ="src/ios/DDFileReader.h" />
         <source-file src ="src/ios/DDFileReader.m"/>
         
         <header-file src ="src/ios/NSString+MD5Addition.h" />
