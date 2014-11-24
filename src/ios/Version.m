@@ -66,19 +66,36 @@ static VersionPluginDelegate* dlg;
 
 - (void) updateTo: (CDVInvokedUrlCommand*)command
 {
-    NSMutableDictionary* args = [command.arguments objectAtIndex:0];
- 
-    NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
-    NSString* url = [ [args objectForKey:@"url"] stringByAppendingString: remoteVersion] ;
 
+    [dlg setJSAlive];
+    NSMutableDictionary* args = [command.arguments objectAtIndex:0];
+    NSString* url = nil;
+
+    
+    if (args == [NSNull null]) {
+    
+        url = [dlg prepareDownloadPath];
+
+    }
+    else {
+    
+        NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
+    
+        url = [ [args objectForKey:@"url"] stringByAppendingString: remoteVersion] ;
+    
+    }
+    
     AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
     
     if (appDlg.window.rootViewController != dlg.viewController) {
         
         appDlg.window.rootViewController = dlg.viewController;
+        
+        [dlg pluginPullDataFromWeb:url];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
     }
-    [dlg pluginPullDataFromWeb:url];
-    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
     
 }
 
@@ -86,6 +103,8 @@ static VersionPluginDelegate* dlg;
 {
     id message = [command.arguments objectAtIndex:0];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+    
+    [dlg pluginStartSynch];
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
