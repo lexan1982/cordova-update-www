@@ -113,7 +113,7 @@
         
         <header-file src ="src/ios/UartViewController.h" />
         <source-file src ="src/ios/UartViewController.m" />
-        <resource-file src ="src/ios/UartViewController.xib" />
+        
         
         <header-file src ="src/ios/VersionPluginDelegate.h" />
         <source-file src ="src/ios/VersionPluginDelegate.m" />
