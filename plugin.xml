@@ -82,19 +82,19 @@
             </array>
         </config-file>
         
-        <header-file src ="src/ios/crypt.h" target-dir="minizip" />
+        <header-file src ="src/ios/minizip/crypt.h" target-dir="minizip" />
         
-        <source-file src ="src/ios/ioapi.c" target-dir="minizip" />
-        <header-file src ="src/ios/ioapi.h" target-dir="minizip" />
+        <source-file src ="src/ios/minizip/ioapi.c" target-dir="minizip" />
+        <header-file src ="src/ios/minizip/ioapi.h" target-dir="minizip" />
         
-        <source-file src ="src/ios/mztools.c" target-dir="minizip" />
-        <header-file src ="src/ios/mztools.h" target-dir="minizip" />
+        <source-file src ="src/ios/minizip/mztools.c" target-dir="minizip" />
+        <header-file src ="src/ios/minizip/mztools.h" target-dir="minizip" />
         
-        <source-file src ="src/ios/unzip.c" target-dir="minizip" />
-        <header-file src ="src/ios/unzip.h" target-dir="minizip" />
+        <source-file src ="src/ios/minizip/unzip.c" target-dir="minizip" />
+        <header-file src ="src/ios/minizip/unzip.h" target-dir="minizip" />
         
-        <source-file src ="src/ios/zip.c" target-dir="minizip" />
-        <header-file src ="src/ios/zip.h" target-dir="minizip" />
+        <source-file src ="src/ios/minizip/zip.c" target-dir="minizip" />
+        <header-file src ="src/ios/minizip/zip.h" target-dir="minizip" />
 
  	      <header-file src ="src/ios/DDFileReader.h" />
         <source-file src ="src/ios/DDFileReader.m"/>
