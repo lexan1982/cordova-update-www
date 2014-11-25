@@ -44,6 +44,8 @@
 	IBOutlet UITextField* password_field;
     UILabel* myLoginContainer;
     BOOL    haveAlert;
+    BOOL    jsAlive;
+    NSString* newVersion;
 
 	IBOutlet UIActivityIndicatorView *activityIndicator;
 }
@@ -56,6 +58,9 @@
 @property (nonatomic, retain) IBOutlet UIWindow* window;
 @property (nonatomic, retain) IBOutlet UartViewController* viewController;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+
+
+
 
 -(void)removeSplash:(NSNotification *)aNotification;
 -(void)pushviewBack:(NSNotification *)aNotification;
@@ -70,6 +75,11 @@
 - (void) pullDataFromTimer:(NSTimer*)timer;
 - (void) checkNewVersion:(NSTimer*)timer;
 - (void)sendEmailWithFile:(NSString*)myFile;
+
+- (void) pluginStartSynch;
+- (NSString*) prepareDownloadPath;
+- (void) checkIsJSHanged: (NSTimer*) timer;
+- (void) setJSAlive;
 
 @end
 

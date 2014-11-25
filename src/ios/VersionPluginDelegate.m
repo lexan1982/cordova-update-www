@@ -30,6 +30,8 @@
 #import "Reachability.h"
 #import "SSZipArchive.h"
 #import "UIDevice+IdentifierAddition.h"
+#import "DDFileReader.h"
+#import "AppDelegate.h"
 
 //#ifdef CORDOVA_FRAMEWORK
     #import <Cordova/CDVPlugin.h>
@@ -84,8 +86,19 @@
 	application.networkActivityIndicatorVisible = NO;
 }
 
+- (void) onDidBecomeActive
+{
+    /* UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Update"
+                                                    message:@"Update Msg"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:@"Update"];*/
+    //[alert show];
+    [self checkNewVersion:nil];
+}
+
 - (id) init
-{	
+{
 	/** If you need to do any extra app-specific initialization, you can do it here
 	 *  -jm
 	 **/
@@ -95,6 +108,8 @@
     haveAlert = NO;
 
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDidBecomeActive)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];;
   
   NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
   NSString *sourcePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"www"];
@@ -392,17 +407,55 @@
             NSString* curVersionFile = [[NSUserDefaults standardUserDefaults] stringForKey:@"_currentVersionFile"];
 			NSLog(@"User wants to update to %@", curVersionFile);
             [self startAnimation];
+
+            jsAlive = NO;
+            [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"UART.system.Helper.echo();"];
             
-            NSString *jsReturn = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"phonegap_upload_evals();"];
-            [[NSUserDefaults standardUserDefaults] setObject:curVersionFile forKey:@"_pullVersion"];
+            
+            [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkIsJSHanged:) userInfo:nil repeats:NO];
+            
+            //[[NSUserDefaults standardUserDefaults] setObject:curVersionFile forKey:@"_pullVersion"];
             
             // as a safety valve - setup a timer to pull this as well...
             // look for uar://upload-evals/finished - should really be a handshake...
-            [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pullDataFromTimer:) userInfo:nil repeats:NO];
+            //[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(pullDataFromTimer:) userInfo:nil repeats:NO];
 		} else {
             haveAlert = NO;
         }
 	}
+}
+
+- (void) setJSAlive
+{
+    jsAlive = YES;
+}
+
+- (void) checkIsJSHanged: (NSTimer*) timer
+{
+    NSLog(@"checkIsJSHanged");
+    
+    if (!jsAlive) {
+        
+        NSString* url = [self prepareDownloadPath];
+        
+        AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        
+        
+        if (appDlg.window.rootViewController != self.viewController) {
+            
+            appDlg.window.rootViewController = self.viewController;
+            
+            [self pluginPullDataFromWeb:url];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
+        }
+
+    }
+}
+
+- (void) pluginStartSynch
+{
+       [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"UART.system.Helper.syncBeforeUpdate();"];
 }
 
 - (void) uploadEvalsLooped:(NSTimer*)timer {
@@ -489,11 +542,11 @@
     
     // if we have connectivity -- check the version compared the web report...
     //    if ( [[Reachability reachabilityWithHostName:@"uar1.universityathlete.com"] isReachable] && !haveAlert) {
-    if ( [[Reachability reachabilityWithHostName:@"uar1.universityathlete.com"] isReachable] && !haveAlert) {
+    if ( [[Reachability reachabilityWithHostName:@"www.google.com"] isReachable] && !haveAlert) {
         
         //NSString *stringURL = @"http://uar1.universityathlete.com/ios2013/version.html";
         //NSString *stringURL = @"http://tsvb.touchstat.com/update/ios/tablet/version.html";
-        NSString *stringURL = @"http://uart.universityathlete.com/update/ios2014/tablet/version.html";
+        NSString *stringURL = @"http://uart.universityathlete.com/update/ios2014/tablet/version_Test.html";
         
         CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
         __block UIView* chView = [[UIView alloc] initWithFrame:CGRectMake(0, viewBounds.size.height - 50, 100, 50)];
@@ -510,18 +563,50 @@
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
         [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             NSString *curVersionStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSString *localVersionStr;
             
             [chView removeFromSuperview];
 
             NSArray *myVersionParts = [curVersionStr componentsSeparatedByString:@"|"];
-            NSString *jsReturn = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"cfg.revision"];
-            NSLog(@"jsReturn : %@", jsReturn);
-            if ( ![jsReturn isEqualToString:[myVersionParts objectAtIndex:0]] ) {
-                [[NSUserDefaults standardUserDefaults] setObject:jsReturn forKey:@"_currentRevision"];
+            NSLog(@"myVersionParts: %@", myVersionParts);
+            
+            NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString *folderPath = [documentsDirectory stringByAppendingPathComponent:@"www"];
+            
+            NSString *bundleFilePath = [[NSBundle mainBundle] pathForResource:@"www/index" ofType:@"html"];
+            
+            BOOL success = [[NSFileManager defaultManager] fileExistsAtPath:folderPath];
+            NSString* indexHtmlFilePath;
+            
+            if (success) {
+                
+                indexHtmlFilePath = [folderPath stringByAppendingPathComponent:@"index.html"];
+            }
+            else {
+                
+                indexHtmlFilePath = bundleFilePath;
+            }
+            
+            DDFileReader * reader = [[DDFileReader alloc] initWithFilePath:indexHtmlFilePath];
+            NSString * line = nil;
+            while ((line = [reader readLine])) {
+                
+                if ([line rangeOfString:@"src=\"cordova.js?"].location != NSNotFound) {
+                    NSArray *verParts = [[[line componentsSeparatedByString:@"?"] objectAtIndex:1] componentsSeparatedByString:@"-"];
+                    
+                    localVersionStr = [NSString stringWithFormat:@"%@-%@", [verParts objectAtIndex:0], [verParts objectAtIndex:1]];
+                    break;
+                }
+            }
+
+            if ( ![localVersionStr isEqualToString:[myVersionParts objectAtIndex:0]] ) {
+                [[NSUserDefaults standardUserDefaults] setObject:localVersionStr forKey:@"_currentRevision"];
                 NSLog(@"We should ask the user to download a new version");
+                
+                newVersion = [myVersionParts objectAtIndex:0];
                 UIAlertView *alert = [[UIAlertView alloc]
                                       initWithTitle:@"Update Available" message:
-                                      [NSString stringWithFormat:@"Current version: %@\nUpdate to: %@",jsReturn, [myVersionParts objectAtIndex:0] ]
+                                      [NSString stringWithFormat:@"%@ Current version: %@\nUpdate to: %@",[myVersionParts objectAtIndex:2], localVersionStr, [myVersionParts objectAtIndex:0] ]
                                       delegate:self cancelButtonTitle:@"Cancel"
                                       otherButtonTitles:@"Update Now", nil];
                 
@@ -531,6 +616,10 @@
                 alert.tag = 101;
                 [alert show];
                 //            [alert release];
+            }
+            else {
+                
+                newVersion = nil;
             }
         }];
         
@@ -565,6 +654,13 @@
 	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 }
 
+- (NSString*) prepareDownloadPath
+{
+    NSString* stringURL = [NSString stringWithFormat:@"http://uart.universityathlete.com/update/ios2014/tablet/%@.zip", newVersion];
+    
+    return stringURL;
+}
+
 - (void) pluginPullDataFromWeb:(NSString*) srcFile {
     
     [self startAnimation];
@@ -577,8 +673,10 @@
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     
 	[request setURL:[NSURL URLWithString:srcFile]];
+    //[request setTimeoutInterval:10];
 	m_requestType = 1;      // our primary request...
 	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+   
 }
 
 #pragma mark URL CONNECTION DELEGATE
