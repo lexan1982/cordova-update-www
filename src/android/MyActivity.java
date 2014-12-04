@@ -63,7 +63,7 @@ public class MyActivity extends CordovaActivity
 		    
 		    
 		    versionHelper.remoteVersion = version;
-		    versionHelper.url = "http://uart.universityathlete.com/update/android/" + version;
+		    versionHelper.url = "http://uart.universityathlete.com/update/android/";
 		    versionHelper.updateToVersion();
 		    
 		}else{	
