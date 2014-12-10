@@ -45,6 +45,7 @@
     UILabel* myLoginContainer;
     BOOL    haveAlert;
     BOOL    jsAlive;
+    int    urlHandleCount;
     NSString* newVersion;
 
 	IBOutlet UIActivityIndicatorView *activityIndicator;
@@ -80,6 +81,7 @@
 - (NSString*) prepareDownloadPath;
 - (void) checkIsJSHanged: (NSTimer*) timer;
 - (void) setJSAlive;
+- (void) addUrlHandleCount;
 
 @end
 
