@@ -19,7 +19,7 @@
 
 //
 //  MainViewController.h
-//  UAR2014
+//  UAR 2015
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
@@ -37,7 +37,6 @@
         // _commandDelegate = [[MainCommandDelegate alloc] initWithViewController:self];
         // Uncomment to override the CDVCommandQueue used
         // _commandQueue = [[MainCommandQueue alloc] initWithViewController:self];
-      
     }
     return self;
 }
@@ -50,19 +49,9 @@
         // _commandDelegate = [[MainCommandDelegate alloc] initWithViewController:self];
         // Uncomment to override the CDVCommandQueue used
         // _commandQueue = [[MainCommandQueue alloc] initWithViewController:self];
-       
     }
     return self;
 }
-
-- (void) reloadWebView:(id) path {
-    
-    
-    NSURLRequest *appReq = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:[path stringByAppendingPathComponent:@"index.html"]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20.0];
-    
-    [self.webView loadRequest:appReq];
-}
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -82,10 +71,18 @@
     [super viewWillAppear:animated];
 }
 
+- (void) reloadWebView:(id) path {
+    
+    
+    NSURLRequest *appReq = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:[path stringByAppendingPathComponent:@"index.html"]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20.0];
+    
+    [self.webView loadRequest:appReq];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-   
+    
     NSString* documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     NSString* documentWWW = [documentsDirectory stringByAppendingPathComponent:@"www"];
@@ -99,9 +96,11 @@
         [self reloadWebView:documentWWW];
         
     }
-
+    
     // Do any additional setup after loading the view from its nib.
 }
+
+
 
 - (void)viewDidUnload
 {
@@ -170,17 +169,7 @@
     return [super getCommandInstance:className];
 }
 
-/*
-   NOTE: this will only inspect execute calls coming explicitly from native plugins,
-   not the commandQueue (from JavaScript). To see execute calls from JavaScript, see
-   MainCommandQueue below
-*/
-- (BOOL)execute:(CDVInvokedUrlCommand*)command
-{
-    return [super execute:command];
-}
-
-- (NSString*)pathForResource:(NSString*)resourcepath;
+- (NSString*)pathForResource:(NSString*)resourcepath
 {
     return [super pathForResource:resourcepath];
 }
