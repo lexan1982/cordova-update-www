@@ -51,6 +51,7 @@ static VersionPluginDelegate* dlg;
     // override to handle urls sent to your app
     // register your url schemes in your App-Info.plist
     
+    [dlg addUrlHandleCount];
     NSURL* urlParam = [notification object];
     AppDelegate* appDlg = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
