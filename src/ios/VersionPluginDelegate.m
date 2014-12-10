@@ -97,6 +97,11 @@
     [self checkNewVersion:nil];
 }
 
+- (void) addUrlHandleCount {
+    
+    urlHandleCount++;
+}
+
 - (id) init
 {
 	/** If you need to do any extra app-specific initialization, you can do it here
@@ -106,6 +111,7 @@
 	m_requestType = 0;
 	m_data = [[NSMutableData alloc] init];
     haveAlert = NO;
+    urlHandleCount = 0;
 
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDidBecomeActive)
@@ -650,8 +656,20 @@
 	[request setURL:[NSURL URLWithString:stringURL]];
     //NSData *urlData = [NSData dataWithContentsOfURL:url];
     
-	m_requestType = 1;      // our primary request...
-	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    m_requestType = 1;      // our primary request...
+    if (urlHandleCount < 2) {
+    
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            
+            
+            
+                [self handleNewWebData:data];
+            
+            
+        }];
+    }
+    
+	//m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 }
 
 - (NSString*) prepareDownloadPath
@@ -708,12 +726,12 @@
     NSLog(@"Connection finished loading...");
 	if(m_requestType == 1)
 	{
-		[self handleNewWebData];
+        [self handleNewWebData:m_data];
 	}
 }
 
--(void)handleNewWebData {
-    if ( m_data )
+-(void)handleNewWebData: (NSData*) data {
+    if ( data )
     {
         NSArray       *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString  *documentsDirectory = [paths objectAtIndex:0];
@@ -723,7 +741,7 @@
         
         NSLog(@"filePaths %@", filePath);
         
-        [m_data writeToFile:filePath atomically:YES];
+        [data writeToFile:filePath atomically:YES];
         [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(unzipNew:) userInfo:@"" repeats:NO];
     }
     [self stopAnimation];
@@ -792,6 +810,7 @@
         
     }
     
+    urlHandleCount = 0;
 }
 
 - (void) reloadWebView:(id) path {
