@@ -214,7 +214,7 @@
     UIDeviceOrientation curDevOrientation = [[UIDevice currentDevice] orientation];
     
     if (UIDeviceOrientationUnknown == curDevOrientation) {
-        // UIDevice isn't firing orientation notifications yet… go look at the status bar
+        // UIDevice isn't firing orientation notifications yetвЂ¦ go look at the status bar
         curDevOrientation = (UIDeviceOrientation)[[UIApplication sharedApplication] statusBarOrientation];
     }
     
@@ -537,7 +537,7 @@
     // NSURL *url = [[NSBundle mainBundle] URLForResource:@"index" withExtension:@"html"];
     //[self.viewController.webView loadRequest:[NSURLRequest requestWithURL:url]];
     
-    // NSLog(@"url address: %@", url);
+    //В NSLog(@"url address: %@", url);
     
     NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)objectAtIndex:0];
     NSString *original = [appLibraryFolder stringByAppendingPathComponent:@"WebKit/LocalStorage/file__0"];
@@ -555,7 +555,7 @@
         NSString *stringURL = @"http://uart.universityathlete.com/update/ios2014/tablet/version_Test.html";
         
         CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
-        __block UIView* chView = [[UIView alloc] initWithFrame:CGRectMake(0, viewBounds.size.height - 50, 100, 50)];
+        /*__block UIView* chView = [[UIView alloc] initWithFrame:CGRectMake(0, viewBounds.size.height - 50, 100, 50)];
         [chView setBackgroundColor:[UIColor grayColor]];
         __block UILabel* chLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 50)];
         [chLbl setText:@"Checking Version"];
@@ -565,13 +565,13 @@
         [chView addSubview:chLbl];
         
         [viewController.view addSubview:chView];
-        
+        */
         NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
         [NSURLConnection sendAsynchronousRequest:req queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             NSString *curVersionStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSString *localVersionStr;
             
-            [chView removeFromSuperview];
+            //[chView removeFromSuperview];
 
             NSArray *myVersionParts = [curVersionStr componentsSeparatedByString:@"|"];
             NSLog(@"myVersionParts: %@", myVersionParts);
@@ -612,7 +612,7 @@
                 newVersion = [myVersionParts objectAtIndex:0];
                 UIAlertView *alert = [[UIAlertView alloc]
                                       initWithTitle:@"Update Available" message:
-                                      [NSString stringWithFormat:@"%@ Current version: %@\nUpdate to: %@",[myVersionParts objectAtIndex:2], localVersionStr, [myVersionParts objectAtIndex:0] ]
+                                      [NSString stringWithFormat:@"%@ \nCurrent version: %@\nUpdate to: %@",[myVersionParts objectAtIndex:2], localVersionStr, [myVersionParts objectAtIndex:0] ]
                                       delegate:self cancelButtonTitle:@"Cancel"
                                       otherButtonTitles:@"Update Now", nil];
                 
@@ -761,8 +761,8 @@
         
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Problem" message:
-                              [NSString stringWithFormat:@"Wrong download parameters"]
+                              initWithTitle:@"Update Error" message:
+                              [NSString stringWithFormat:@"Can't download app update. Please check internet connection and try again."]
                               delegate:self cancelButtonTitle:@"Cancel"
                               otherButtonTitles:nil];
         
