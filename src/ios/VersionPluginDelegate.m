@@ -114,8 +114,8 @@
     urlHandleCount = 0;
 
     [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDidBecomeActive)
-                                                 name:UIApplicationDidBecomeActiveNotification object:nil];;
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDidBecomeActive)
+                                                 //name:UIApplicationDidBecomeActiveNotification object:nil];;
   
   NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
   NSString *sourcePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"www"];
@@ -132,11 +132,11 @@
   
   // 900 is 15 min...
   // check for a new version every 12 minutes and auto upload evals every 30 min...
-  /*[NSTimer scheduledTimerWithTimeInterval:(12*60.0) target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:YES];
-  [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:NO];
+  //[NSTimer scheduledTimerWithTimeInterval:(12*60.0) target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:YES];
+  [NSTimer scheduledTimerWithTimeInterval:(60.0*60.0) target:self selector:@selector(checkNewVersion:) userInfo:nil repeats:YES];
   
-  [NSTimer scheduledTimerWithTimeInterval:(30*60.0) target:self selector:@selector(uploadEvalsLooped:) userInfo:@"" repeats:YES];
-  */
+  //[NSTimer scheduledTimerWithTimeInterval:(30*60.0) target:self selector:@selector(uploadEvalsLooped:) userInfo:@"" repeats:YES];
+
   NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
   [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
   
