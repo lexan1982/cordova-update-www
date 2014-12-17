@@ -69,7 +69,7 @@ import com.ideaintech.app.UAR2015;
 */
 public class Version extends CordovaPlugin {
 	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-	 public String url = "http://uart.universityathlete.com/update/android/";
+	 public String url = "http://uart.universityathlete.com/update/android2015/";
 	 public String remoteVersion;
 	 public String currentVersion;
 	 private String remoteChecksum;
