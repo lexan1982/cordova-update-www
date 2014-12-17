@@ -132,7 +132,7 @@
   
   // 900 is 15 min...
   // check for a new version every 12 minutes and auto upload evals every 30 min...
-  //[NSTimer scheduledTimerWithTimeInterval:(12*60.0) target:self selector:@selector(checkNewVersion:) userInfo:@"" repeats:YES];
+  [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkNewVersion:) userInfo:nil repeats:NO];
   [NSTimer scheduledTimerWithTimeInterval:(60.0*60.0) target:self selector:@selector(checkNewVersion:) userInfo:nil repeats:YES];
   
   //[NSTimer scheduledTimerWithTimeInterval:(30*60.0) target:self selector:@selector(uploadEvalsLooped:) userInfo:@"" repeats:YES];
@@ -550,7 +550,7 @@
     //    if ( [[Reachability reachabilityWithHostName:@"uar1.universityathlete.com"] isReachable] && !haveAlert) {
     if ( [[Reachability reachabilityWithHostName:@"www.google.com"] isReachable] && !haveAlert) {
         
-        //NSString *stringURL = @"http://uar1.universityathlete.com/ios2013/version.html";
+        //NSString *stringURL = @"http://uar1.universityathlete.com/ios2013/version.txt";
         //NSString *stringURL = @"http://tsvb.touchstat.com/update/ios/tablet/version.html";
         NSString *stringURL = @"http://uart.universityathlete.com/update/ios2015/tablet/version.txt";
         
