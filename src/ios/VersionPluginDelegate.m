@@ -649,7 +649,7 @@
 	//NSString *stringURL = [NSString stringWithFormat:@"http://uar1.universityathlete.com/ios2013/%@",srcFile];
     NSLog(@"srcFile %@", srcFile);
 
-    NSString *stringURL = [NSString stringWithFormat:@"http://uart.universityathlete.com/update/ios2014/tablet/%@",srcFile];
+    NSString *stringURL = [NSString stringWithFormat:@"http://uart.universityathlete.com/update/ios2015/tablet/%@",srcFile];
     //NSString *stringURL = [NSString stringWithFormat:@"http://192.168.0.109/%@",srcFile];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     //    NSURL  *url = [NSURL URLWithString:stringURL];
@@ -674,7 +674,7 @@
 
 - (NSString*) prepareDownloadPath
 {
-    NSString* stringURL = [NSString stringWithFormat:@"http://uart.universityathlete.com/update/ios2014/tablet/%@.zip", newVersion];
+    NSString* stringURL = [NSString stringWithFormat:@"http://uart.universityathlete.com/update/ios2015/tablet/%@.zip", newVersion];
     
     return stringURL;
 }
