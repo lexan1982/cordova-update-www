@@ -552,7 +552,7 @@
         
         //NSString *stringURL = @"http://uar1.universityathlete.com/ios2013/version.html";
         //NSString *stringURL = @"http://tsvb.touchstat.com/update/ios/tablet/version.html";
-        NSString *stringURL = @"http://uart.universityathlete.com/update/ios2014/tablet/version.html";
+        NSString *stringURL = @"http://uart.universityathlete.com/update/ios2014/tablet/version.txt";
         
         CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
         /*__block UIView* chView = [[UIView alloc] initWithFrame:CGRectMake(0, viewBounds.size.height - 50, 100, 50)];
