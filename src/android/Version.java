@@ -556,7 +556,7 @@ public class Version extends CordovaPlugin {
 	            StrictMode.ThreadPolicy policy = new StrictMode.
 	              ThreadPolicy.Builder().permitAll().build();
 	            StrictMode.setThreadPolicy(policy); 
-	            URL url = new URL(this.url +"versionTest.html");
+	            URL url = new URL(this.url +"version.txt");
 
 	            HttpURLConnection con = (HttpURLConnection) url
 	              .openConnection();
