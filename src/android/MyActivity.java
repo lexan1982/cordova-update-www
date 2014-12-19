@@ -20,6 +20,8 @@
 package com.ideaintech.app;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.cordova.Config;
 import org.apache.cordova.CordovaActivity;
@@ -29,11 +31,12 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.ideateam.plugin.Version;
 
-public class MyActivity extends CordovaActivity 
+public class UAR2015 extends CordovaActivity 
 {
  	 Version versionHelper;
 	 public long timestamp;
@@ -103,9 +106,23 @@ public class MyActivity extends CordovaActivity
 		return wwwFolder; 
 	} 
     
-    private void checkForUpdates(){    	
-		 versionHelper.checkForUpdates();		    	
-    }
+    private void checkForUpdates(){      	
+    	updateData.run();
+    	
+    }    
+   
+    Handler handler = new Handler();
+    
+    private Runnable updateData = new Runnable(){
+        public void run(){
+        	
+        	Log.d(TAG, "...tick");
+        	versionHelper.checkForUpdates();	
+        	
+            handler.postDelayed(updateData, 1000 * 60 * 60);
+        }
+    };
+    
     AlertDialog dialog;
     public void showConfirmDialogForUpdate(String updateNote, String currentVersion, String remoteVersion)
     {
