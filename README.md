@@ -83,8 +83,8 @@ This is a plugin implementation of the <b>UpdateTo Version</b> function which ca
   <pre>cordova pllatform add android </pre>
   <pre>cordova plugin add https://github.com/lexan1982/cordova-update-www --variable URL_SCHEME=MyAPP</pre>
 2. Go to the folder <b>platforms\android\src\com\ideateam\app</b>
-3. Rename <b>MyActivity.java</b> to <b>MyAPP.java</b>
-4. Open <b>MyAPP.java</b> and change class name from <b>MyActivity</b> to <b>MyAPP</b>
+3. Rename <b>VersionMyApp.java</b> to <b>Version.java</b>
+4. Open <b>MyAPP.java</b> and change class name from <b>Activity</b> to <b>MyAPP</b>
    <pre>public class MyAPP extends CordovaActivity{
            ...
     } </pre>
