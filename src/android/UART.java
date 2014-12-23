@@ -36,7 +36,7 @@ import android.util.Log;
 
 import com.ideateam.plugin.Version;
 
-public class MyActivity extends CordovaActivity 
+public class UART extends CordovaActivity 
 {
  	 Version versionHelper;
 	 public long timestamp;
