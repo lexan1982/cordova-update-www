@@ -36,7 +36,7 @@ import android.util.Log;
 
 import com.ideateam.plugin.Version;
 
-public class UART extends CordovaActivity 
+public class UAR2015 extends CordovaActivity 
 {
  	 Version versionHelper;
 	 public long timestamp;
@@ -67,7 +67,7 @@ public class UART extends CordovaActivity
 		    
 		    versionHelper.remoteVersion = version;
 		    versionHelper.url = "http://uart.universityathlete.com/update/android2015/";
-		    versionHelper.updateToVersion();
+		    versionHelper.updateToVersion(version);
 		    
 		}else{	
 	
