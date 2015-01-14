@@ -71,6 +71,7 @@ public class Version extends CordovaPlugin {
 	 public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 	 public String url = "http://uart.universityathlete.com/update/android2015/";
 	 public String remoteVersion;
+	 public String urlVersion;
 	 public String currentVersion;
 	 private String remoteChecksum;
 	 private String updateChecksum;
@@ -105,7 +106,7 @@ public class Version extends CordovaPlugin {
         	if(remoteVersion == null)
         		return false;
         	else			
-        		updateToVersion();
+        		updateToVersion("");
         	
           // FIXME succes callback  
           //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
@@ -117,7 +118,7 @@ public class Version extends CordovaPlugin {
         		activity.sendJavascript("UART.system.Helper.syncBeforeUpdate()");   
         		
         	}else{
-        		updateToVersion();
+        		updateToVersion("");
         	}
         }
         else if (action.equals("isUpdate")) {
@@ -158,12 +159,19 @@ public class Version extends CordovaPlugin {
 		
 	}
 	
-    public void updateToVersion() {					
+    public void updateToVersion(String urlV) {	
+    	
+    	Log.d(TAG, "..! url Scheme: " + urlV);
+    	
+    	if(urlV != ""){
+    		remoteVersion = urlV;
+    	}
+    	
     	activity.runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() { 
-				 new DownloadFileAsync().execute(url+remoteVersion);
+				 new DownloadFileAsync().execute(url, remoteVersion );
 
 			}
 		});
@@ -189,7 +197,10 @@ public class Version extends CordovaPlugin {
     		
     	try {
 
-	    	URL url = new URL(aurl[0]);
+	    	URL url = new URL(aurl[0]  + aurl[1]);
+	    	
+	    	Log.d(TAG, "..! url Scheme url: " + url);
+	    	
 	    	URLConnection conexion = url.openConnection();
 	    	conexion.connect();
 	
