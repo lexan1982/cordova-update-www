@@ -71,16 +71,15 @@ static VersionPluginDelegate* dlg;
     [dlg setJSAlive];
     NSMutableDictionary* args = [command.arguments objectAtIndex:0];
     NSString* url = nil;
+    NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
 
     
-    if (args == [NSNull null]) {
+    if (args == [NSNull null] || remoteVersion == [NSNull null]) {
     
         url = [dlg prepareDownloadPath];
 
     }
     else {
-    
-        NSString* remoteVersion = [args objectForKey:@"remoteVersion"];
     
         url = [ [args objectForKey:@"url"] stringByAppendingString: remoteVersion] ;
     
@@ -96,6 +95,13 @@ static VersionPluginDelegate* dlg;
         [dlg pluginPullDataFromWeb:url];
         
         [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
+    }
+    else
+    {
+        [dlg pluginPullDataFromWeb:url];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"_pullVersion"];
+        
     }
     
 }
