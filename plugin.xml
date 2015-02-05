@@ -119,8 +119,7 @@
         <source-file src ="src/ios/VersionPluginDelegate.m" />
                 
         <source-file src="src/ios/Version.m" />
-        <source-file src="src/ios/AppDelegate.m" />
-
+        
         
         <framework src="libz.dylib" />
         <framework src="MessageUI.framework" weak="true" />
