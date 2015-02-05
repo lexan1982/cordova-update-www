@@ -50,41 +50,9 @@
 
 @implementation VersionPluginDelegate
 
-@synthesize activityIndicator;
+
 @synthesize window, viewController;
 
-- (void) startAnimation
-{
-    if (!self.activityIndicator) {
-        //        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake(window.bounds.size.width / 2 - 36, window.bounds.size.height / 2 - 36, 72, 72)];
-        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake(5, 3, 36, 36)];
-        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-        self.activityIndicator.hidesWhenStopped = YES;
-        self.activityIndicator.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
-                                                   UIViewAutoresizingFlexibleRightMargin |
-                                                   UIViewAutoresizingFlexibleTopMargin |
-                                                   UIViewAutoresizingFlexibleBottomMargin);
-        [viewController.view addSubview: self.activityIndicator];
-        NSLog(@" activity is at %@", NSStringFromCGRect(self.activityIndicator.frame));
-    }
-	[self.activityIndicator startAnimating];
-    self.viewController.view.userInteractionEnabled = NO;
-    self.viewController.webView.alpha = 0.4;
-	UIApplication *application = [UIApplication sharedApplication];
-	application.networkActivityIndicatorVisible = YES;
-}
-
-
-/* show the user that loading activity has stopped */
-
-- (void) stopAnimation
-{
-	[self.activityIndicator stopAnimating];
-    self.viewController.view.userInteractionEnabled = YES;
-    self.viewController.webView.alpha = 1.0;
-	UIApplication *application = [UIApplication sharedApplication];
-	application.networkActivityIndicatorVisible = NO;
-}
 
 - (void) onDidBecomeActive
 {
@@ -412,7 +380,7 @@
 		if(buttonIndex == 1) {
             NSString* curVersionFile = [[NSUserDefaults standardUserDefaults] stringForKey:@"_currentVersionFile"];
 			NSLog(@"User wants to update to %@", curVersionFile);
-            [self startAnimation];
+            [self.viewController startAnimation];
 
             jsAlive = NO;
             [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"UART.system.Helper.echo();"];
@@ -478,7 +446,7 @@
     NSString *my_sgready = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"cfg.cpid"];
     if ([my_sgready intValue]>0) {
         self.viewController.webView.hidden = NO;
-        [self stopAnimation];
+        [self.viewController stopAnimation];
         //[splashCheckTimer invalidate];
         //splashCheckTimer = nil;
         myLoginContainer.hidden = YES;
@@ -502,7 +470,7 @@
             NSString *my_sgready = [self.viewController.webView stringByEvaluatingJavaScriptFromString:@"cfg.cpid"];
             if ([my_sgready intValue]>0) {
                 self.viewController.webView.hidden = NO;
-                [self stopAnimation];
+                [self.viewController stopAnimation];
                 //[splashCheckTimer invalidate];
                 //splashCheckTimer = nil;
                 myLoginContainer.hidden = YES;
@@ -641,7 +609,7 @@
 }
 
 - (void) pullDataFromWeb:(NSString*) srcFile {
-    [self startAnimation];
+    [self.viewController startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
     
@@ -681,7 +649,7 @@
 
 - (void) pluginPullDataFromWeb:(NSString*) srcFile {
     
-    [self startAnimation];
+    [self.viewController startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
     
@@ -693,7 +661,28 @@
 	[request setURL:[NSURL URLWithString:srcFile]];
     //[request setTimeoutInterval:10];
 	m_requestType = 1;      // our primary request...
-	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+	//m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        
+       
+        if (error != nil) {
+    
+            printf("error = %s\n", [[error description] UTF8String]);
+            NSLog(@"connection - download fail!");
+            
+            NSString *errormsg = [NSString stringWithFormat:@"%s",[[error description] UTF8String]];
+            [self.viewController stopAnimation];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NoConnectionNotification" object:self];
+            
+        }
+        else {
+        
+            [self handleNewWebData:data];
+        }
+        
+    }];
    
 }
 
@@ -716,7 +705,7 @@
     NSLog(@"connection - download fail!");
 	
 	NSString *errormsg = [NSString stringWithFormat:@"%s",[[error description] UTF8String]];
-    [self stopAnimation];
+    [self.viewController stopAnimation];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"NoConnectionNotification" object:self];
 }
@@ -744,7 +733,7 @@
         [data writeToFile:filePath atomically:YES];
         [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(unzipNew:) userInfo:@"" repeats:NO];
     }
-    [self stopAnimation];
+//    [self stopAnimation];
     haveAlert = NO;
 }
 
@@ -819,6 +808,7 @@
     NSURLRequest *appReq = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:[path stringByAppendingPathComponent:@"index.html"]] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20.0];
     
     [self.viewController.webView loadRequest:appReq];
+    [self.viewController stopAnimation];
 }
 
 
