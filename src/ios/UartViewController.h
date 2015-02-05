@@ -35,8 +35,16 @@
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
 
-@interface UartViewController : CDVViewController <MFMailComposeViewControllerDelegate>
+@interface UartViewController : CDVViewController <MFMailComposeViewControllerDelegate> {
+    
+    IBOutlet UIActivityIndicatorView *activityIndicator;
+    UIView* updMsgView;
+    int aCnt;
+    
+}
 
 @property (nonatomic, strong) NSString *startFilePath;
+
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 @end
