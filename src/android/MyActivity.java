@@ -93,7 +93,7 @@ public class UAR2015 extends CordovaActivity
     	if(f != null && f.length > 0){
 	    				
 			for(int i = 0; i < f.length; i++){
-				if(wwwFolder == null && !f[i].getName().equals("Documents") && !f[i].getName().equals("rList") && f[i].getName().length < 10)
+				if(wwwFolder == null && !f[i].getName().equals("Documents") && !f[i].getName().equals("rList") && f[i].getName().length() < 10)
 				{	wwwFolder = f[i] ;
 					continue;
 				}
