@@ -78,12 +78,12 @@
     
     
     [self.activityIndicator startAnimating];
-    self.view.userInteractionEnabled = NO;
+    self.webView.userInteractionEnabled = NO;
     self.webView.alpha = 0.2;
     UIApplication *application = [UIApplication sharedApplication];
     application.networkActivityIndicatorVisible = YES;
-    
     [self.view addSubview:updMsgView];
+
 }
 
 
@@ -106,6 +106,7 @@
     }
     
     [self.activityIndicator stopAnimating];
+    self.webView.userInteractionEnabled = YES;
     self.view.userInteractionEnabled = YES;
     self.webView.alpha = 1.0;
     UIApplication *application = [UIApplication sharedApplication];
