@@ -62,7 +62,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.ideaintech.app.UAR2015;
+import com.ideaintech.app.CordovaApp;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
@@ -77,7 +77,7 @@ public class Version extends CordovaPlugin {
 	 private String updateChecksum;
 	 private String updateNote;
 	 private String zipChecksum;
-	 public UAR2015 activity;
+	 public CordovaApp activity;
 	 final private String TAG = "CordovaPlugin";
 	 private CallbackContext callbackContext;
 	 
@@ -101,7 +101,7 @@ public class Version extends CordovaPlugin {
     			
     		getRemoteVersion();
     		
-        	this.activity = (UAR2015)this.cordova.getActivity();
+        	this.activity = (CordovaApp)this.cordova.getActivity();
          
         	if(remoteVersion == null)
         		return false;
@@ -111,7 +111,7 @@ public class Version extends CordovaPlugin {
           // FIXME succes callback  
           //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
         }else if (action.equals("echo")) {
-        	this.activity = (UAR2015)this.cordova.getActivity();
+        	this.activity = (CordovaApp)this.cordova.getActivity();
         	//if we get response try sync, else - build is not work
         	if(System.currentTimeMillis() - activity.timestamp < 1000){       
         		
@@ -127,7 +127,7 @@ public class Version extends CordovaPlugin {
         	getVersion(false);
         }
         else if (action.equals("writeToFile")) {
-        	this.activity = (UAR2015)this.cordova.getActivity();
+        	this.activity = (CordovaApp)this.cordova.getActivity();
         	JSONObject obj = new JSONObject(args.getString(0));
     		
         	final String fileName = obj.getString("fileName");
@@ -523,12 +523,12 @@ public class Version extends CordovaPlugin {
 			if(remoteVersion != null && !currentVersion.equals(remoteVersion)){
 					
 			   
-			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
+			    ((CordovaApp) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
 			}else if(!isBackground){
 				if(remoteVersion != null)
-					((UAR2015) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
+					((CordovaApp) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
 				else 
-					((UAR2015) activity).showConfirmDialogForUpdate("Can not get remote version", null, null);
+					((CordovaApp) activity).showConfirmDialogForUpdate("Can not get remote version", null, null);
 			}
 			
         }
@@ -541,7 +541,7 @@ public class Version extends CordovaPlugin {
 	public boolean isOnline() { 
 		
 		if(this.activity ==  null)
-			this.activity = (UAR2015)this.cordova.getActivity();
+			this.activity = (CordovaApp)this.cordova.getActivity();
 		
         ConnectivityManager cm =
             (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
