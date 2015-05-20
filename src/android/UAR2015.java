@@ -54,7 +54,7 @@ public class UAR2015 extends CordovaActivity
         String  url = intent.getDataString();
         
         versionHelper = new Version();   	 
-   	 	versionHelper.activity = (CordovaApp)this.getActivity();
+   	 	versionHelper.activity = (UAR2015)this.getActivity();
         
 		if(url != null && url.contains("download")){
 		
