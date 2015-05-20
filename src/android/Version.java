@@ -583,7 +583,7 @@ public class Version extends CordovaPlugin {
 	       version = version.replace("|",";");
 	       String[] arr =  version.split(";");
 	     
-	       if(arr.length == 3 || arr.length == 4) //fix for not free WiFi
+	       if(arr.length == 4 || arr.length == 5) //fix for not free WiFi
 	       {
 	    	    remoteVersion  = arr[0];
 	       		updateChecksum = arr[2].toUpperCase();
