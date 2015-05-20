@@ -36,7 +36,7 @@ import android.util.Log;
 
 import com.ideateam.plugin.Version;
 
-public class UAR2015 extends CordovaActivity 
+public class MyActivity extends CordovaActivity 
 {
  	 Version versionHelper;
 	 public long timestamp;
@@ -54,7 +54,7 @@ public class UAR2015 extends CordovaActivity
         String  url = intent.getDataString();
         
         versionHelper = new Version();   	 
-   	 	versionHelper.activity = (UAR2015)this.getActivity();
+   	 	versionHelper.activity = (MyActivity)this.getActivity();
         
 		if(url != null && url.contains("download")){
 		
