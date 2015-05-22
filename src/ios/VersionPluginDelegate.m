@@ -396,7 +396,9 @@
 		} else {
             haveAlert = NO;
         }
-	}
+    }else if (actionSheet.tag == 99){//Error update
+        [self.viewController stopAnimation];
+    }
 }
 
 - (void) setJSAlive
