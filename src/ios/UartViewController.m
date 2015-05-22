@@ -39,6 +39,7 @@
     if (!self.activityIndicator) {
         //        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake(window.bounds.size.width / 2 - 36, window.bounds.size.height / 2 - 36, 72, 72)];
         self.activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake(5, 3, 36, 36)];
+        self.activityIndicator.center = self.view.center;
         self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
         self.activityIndicator.hidesWhenStopped = YES;
         self.activityIndicator.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
@@ -48,41 +49,52 @@
         [self.view addSubview: self.activityIndicator];
         NSLog(@" activity is at %@", NSStringFromCGRect(self.activityIndicator.frame));
     }
-    
-    int updMsgWidth = 205;
-    int updMsgFont = 18;
-    int updMsgHeight = 50;
-
-    UIDevice* thisDevice = [UIDevice currentDevice];
-    if(thisDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad)
-    {
-        updMsgWidth = 270;
-        updMsgFont = 24;
-        updMsgHeight = 70;
+    if (!updMsgView) {
+        int updMsgWidth = 205;
+        int updMsgFont = 18;
+        int updMsgHeight = 50;
+        
+        UIDevice* thisDevice = [UIDevice currentDevice];
+        if(thisDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad)
+        {
+            updMsgWidth = 270;
+            updMsgFont = 24;
+            updMsgHeight = 70;
+        }
+        
+        
+        //CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
+        // updMsgView = [[UIView alloc] initWithFrame:CGRectMake(0.5*viewBounds.size.width - updMsgWidth/2, 0.5*viewBounds.size.height - updMsgHeight/2, updMsgWidth, updMsgHeight)];
+        updMsgView = [[UIView alloc] initWithFrame:self.view.bounds];
+        
+        [updMsgView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
+        updMsgView.tag = 102;
+        updMsgView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+        
+        UILabel* chLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, updMsgWidth, updMsgHeight)];
+        CGPoint labelCenter = updMsgView.center;
+        labelCenter.y += 36*2;
+        chLbl.center = labelCenter;
+        chLbl.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
+                                  UIViewAutoresizingFlexibleRightMargin |
+                                  UIViewAutoresizingFlexibleTopMargin |
+                                  UIViewAutoresizingFlexibleBottomMargin);
+        [chLbl setText:@"Please wait while your\napplication is updated..."];
+        [chLbl setBackgroundColor:[UIColor clearColor]];
+        [chLbl setTextColor:[UIColor whiteColor]];
+        [chLbl setFont:[UIFont boldSystemFontOfSize:updMsgFont]];
+        chLbl.textAlignment = NSTextAlignmentCenter;
+        chLbl.lineBreakMode = NSLineBreakByWordWrapping;
+        chLbl.numberOfLines = 0;
+        [updMsgView addSubview:chLbl];
+        [self.view insertSubview:updMsgView belowSubview:self.activityIndicator];
+        
     }
-    
-    
-    CGRect viewBounds = [[UIScreen mainScreen] applicationFrame];
-    updMsgView = [[UIView alloc] initWithFrame:CGRectMake(0.5*viewBounds.size.width - updMsgWidth/2, 0.5*viewBounds.size.height - updMsgHeight/2, updMsgWidth, updMsgHeight)];
-    
-    [updMsgView setBackgroundColor:[UIColor clearColor]];
-    updMsgView.tag = 102;
-    UILabel* chLbl = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, updMsgWidth, updMsgHeight)];
-    [chLbl setText:@"Please wait while your\napplication is updated..."];
-    [chLbl setBackgroundColor:[UIColor clearColor]];
-    [chLbl setTextColor:[UIColor blackColor]];
-    [chLbl setFont:[UIFont boldSystemFontOfSize:updMsgFont]];
-    chLbl.lineBreakMode = NSLineBreakByWordWrapping;
-    chLbl.numberOfLines = 0;
-    [updMsgView addSubview:chLbl];
-    
-    
     [self.activityIndicator startAnimating];
     self.webView.userInteractionEnabled = NO;
-    self.webView.alpha = 0.2;
+    //self.webView.alpha = 0.2;
     UIApplication *application = [UIApplication sharedApplication];
     application.networkActivityIndicatorVisible = YES;
-    [self.view addSubview:updMsgView];
 
 }
 
