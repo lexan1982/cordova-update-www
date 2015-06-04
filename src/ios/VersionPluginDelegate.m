@@ -631,10 +631,7 @@
     
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             
-            
-            
-                [self handleNewWebData:data];
-            
+            [self handleNewWebData:data];
             
         }];
     }
@@ -759,31 +756,30 @@
         
         alert.tag = 99;
         [alert show];
-        //        [alert release];
-        return;
-    }
-    
-    // now name the old www to
-    //NSString* curRevision = [[NSUserDefaults standardUserDefaults] stringForKey:@"_currentRevision"];
-    NSString  *curWWW = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"www"];
-    //NSString  *previousWWW = [NSString stringWithFormat:@"%@/%@", documentsDirectory,curRevision];
-    [[NSFileManager defaultManager] removeItemAtPath:curWWW error:&error];
+        //[alert release];
+    }else{
         
-    
-    if ([[NSFileManager defaultManager] copyItemAtPath:destination toPath:curWWW error:&error] != YES) {
-        NSLog(@"Unable to move file: %@", [error localizedDescription]);
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Problem" message:
-                              [NSString stringWithFormat:@"Unable to move new file in: %@", [error localizedDescription]]
-                              delegate:self cancelButtonTitle:@"Cancel"
-                              otherButtonTitles:nil];
+        // now name the old www to
+        //NSString* curRevision = [[NSUserDefaults standardUserDefaults] stringForKey:@"_currentRevision"];
+        NSString  *curWWW = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"www"];
+        //NSString  *previousWWW = [NSString stringWithFormat:@"%@/%@", documentsDirectory,curRevision];
+        [[NSFileManager defaultManager] removeItemAtPath:curWWW error:&error];
         
-        alert.tag = 99;
-        [alert show];
-        //        [alert release];
-        return;
+        
+        if ([[NSFileManager defaultManager] copyItemAtPath:destination toPath:curWWW error:&error] != YES) {
+            NSLog(@"Unable to move file: %@", [error localizedDescription]);
+            UIAlertView *alert = [[UIAlertView alloc]
+                                  initWithTitle:@"Problem" message:
+                                  [NSString stringWithFormat:@"Unable to move new file in: %@", [error localizedDescription]]
+                                  delegate:self cancelButtonTitle:@"Cancel"
+                                  otherButtonTitles:nil];
+            
+            alert.tag = 99;
+            [alert show];
+            //[alert release];
+        }
+        
     }
-    
     
     // do a little cleanup here...
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
