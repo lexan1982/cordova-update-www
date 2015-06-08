@@ -731,6 +731,9 @@
         
         [data writeToFile:filePath atomically:YES];
         [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(unzipNew:) userInfo:@"" repeats:NO];
+    }else{
+        NSLog(@"No data loaded");
+        [self unzipNew:@""];
     }
 //    [self stopAnimation];
     haveAlert = NO;
