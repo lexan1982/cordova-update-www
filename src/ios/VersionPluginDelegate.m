@@ -46,13 +46,16 @@
 - (void) startAnimation;
 - (void) stopAnimation;
 
+
 @end
 
 @implementation VersionPluginDelegate
 
-
 @synthesize window, viewController;
 
+NSTimer* downloadTimer;
+int downloadTimeouts;
+#define downloadTimeoutValue 10.0
 
 - (void) onDidBecomeActive
 {
@@ -611,6 +614,7 @@
 }
 
 - (void) pullDataFromWeb:(NSString*) srcFile {
+    //url scheme
     [self.viewController startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
@@ -629,14 +633,15 @@
     m_requestType = 1;      // our primary request...
     if (urlHandleCount < 2) {
     
-        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        /*[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             
             [self handleNewWebData:data];
             
-        }];
+        }];//Async */
+        [self startTimer];
+        m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];//Sync
+
     }
-    
-	//m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 }
 
 - (NSString*) prepareDownloadPath
@@ -647,7 +652,7 @@
 }
 
 - (void) pluginPullDataFromWeb:(NSString*) srcFile {
-    
+    //from alert
     [self.viewController startAnimation];
     // after we get this down -- clear the cache...
     [[NSUserDefaults standardUserDefaults] setObject:@"T" forKey:@"_isAppReload"];
@@ -660,9 +665,10 @@
 	[request setURL:[NSURL URLWithString:srcFile]];
     //[request setTimeoutInterval:10];
 	m_requestType = 1;      // our primary request...
-	//m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    [self startTimer];
+	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];//Sync
     
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    /*[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
        
         if (error != nil) {
@@ -673,7 +679,7 @@
             NSString *errormsg = [NSString stringWithFormat:@"%s",[[error description] UTF8String]];
             [self.viewController stopAnimation];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NoConnectionNotification" object:self];
+           [self showNetworkError];
             
         }
         else {
@@ -681,7 +687,7 @@
             [self handleNewWebData:data];
         }
         
-    }];
+    }];//Async */
    
 }
 
@@ -700,18 +706,20 @@
 	assert(m_connection == connection);
 //	[m_connection release];
 	m_connection = nil;
+    [self stopTimer];
 	printf("error = %s\n", [[error description] UTF8String]);
     NSLog(@"connection - download fail!");
 	
 	NSString *errormsg = [NSString stringWithFormat:@"%s",[[error description] UTF8String]];
     [self.viewController stopAnimation];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"NoConnectionNotification" object:self];
+    [self showNetworkError];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSLog(@"Connection finished loading...");
+    [self stopTimer];
 	if(m_requestType == 1)
 	{
         [self handleNewWebData:m_data];
@@ -801,6 +809,55 @@
     }
     
     urlHandleCount = 0;
+}
+
+- (void) downloadTimeout {
+    downloadTimer = nil;
+    if(m_connection == nil || m_data == nil) return;
+    
+    downloadTimeouts++;
+    long downSpeed = m_data.length/(downloadTimeoutValue * downloadTimeouts);//bytes per sec
+    if(downloadTimeouts == 1 && downSpeed > 10000){//80kbps
+        //give more time
+        NSLog(@"download timer - continue");
+        downloadTimer = [NSTimer scheduledTimerWithTimeInterval:downloadTimeoutValue*3 target:self selector:@selector(downloadTimeout) userInfo:@"" repeats:NO];
+    }else{
+        NSLog(@"connection error - timeout");
+        //cancel and show error
+        [m_connection cancel];
+        m_connection = nil;
+        [self.viewController stopAnimation];
+        [self showNetworkError];
+    }
+    
+}
+
+-(void) startTimer
+{
+    [self stopTimer];
+    downloadTimeouts = 0;
+    downloadTimer = [NSTimer scheduledTimerWithTimeInterval:downloadTimeoutValue target:self selector:@selector(downloadTimeout) userInfo:@"" repeats:NO];
+}
+
+-(void) stopTimer
+{
+    [downloadTimer invalidate];
+    downloadTimer = nil;
+}
+
+-(void) showNetworkError
+{
+    //replaces: [[NSNotificationCenter defaultCenter] postNotificationName:@"NoConnectionNotification" object:self];
+    
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"Update Error" message:
+                          [NSString stringWithFormat:@"Can't download app update. Please check internet connection and try again."]
+                          delegate:self cancelButtonTitle:@"Cancel"
+                          otherButtonTitles:nil];
+    
+    alert.tag = 99;
+    [alert show];
+
 }
 
 - (void) reloadWebView:(id) path {
