@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -62,7 +63,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.ideaintech.app.CordovaApp;
+import com.ideaintech.app.UAR2015;
 
 /**
 * This class exposes methods in Cordova that can be called from JavaScript.
@@ -77,7 +78,7 @@ public class Version extends CordovaPlugin {
 	 private String updateChecksum;
 	 private String updateNote;
 	 private String zipChecksum;
-	 public CordovaApp activity;
+	 public UAR2015 activity;
 	 final private String TAG = "CordovaPlugin";
 	 private CallbackContext callbackContext;
 	 
@@ -101,7 +102,7 @@ public class Version extends CordovaPlugin {
     			
     		getRemoteVersion();
     		
-        	this.activity = (CordovaApp)this.cordova.getActivity();
+        	this.activity = (UAR2015)this.cordova.getActivity();
          
         	if(remoteVersion == null)
         		return false;
@@ -111,7 +112,7 @@ public class Version extends CordovaPlugin {
           // FIXME succes callback  
           //  callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, args.getString(0)));
         }else if (action.equals("echo")) {
-        	this.activity = (CordovaApp)this.cordova.getActivity();
+        	this.activity = (UAR2015)this.cordova.getActivity();
         	//if we get response try sync, else - build is not work
         	if(System.currentTimeMillis() - activity.timestamp < 1000){       
         		
@@ -127,7 +128,7 @@ public class Version extends CordovaPlugin {
         	getVersion(false);
         }
         else if (action.equals("writeToFile")) {
-        	this.activity = (CordovaApp)this.cordova.getActivity();
+        	this.activity = (UAR2015)this.cordova.getActivity();
         	JSONObject obj = new JSONObject(args.getString(0));
     		
         	final String fileName = obj.getString("fileName");
@@ -158,6 +159,8 @@ public class Version extends CordovaPlugin {
 		getVersion(true);
 		
 	}
+	DownloadFileAsync myTask;
+	Boolean isCanceled = false;
 	
     public void updateToVersion(String urlV) {	
     	
@@ -171,22 +174,40 @@ public class Version extends CordovaPlugin {
 
 			@Override
 			public void run() { 
-				 new DownloadFileAsync().execute(url, remoteVersion );
-
+				myTask = new DownloadFileAsync();
+				myTask.execute(url, remoteVersion );
 			}
 		});
 
 	}
+    
+    void CancelHandelr(){
+    	myTask.cancel(false);
+    	callbackContext.success("db imported");
+    	callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.ERROR, "Canceled"));
+    }
     
     class DownloadFileAsync extends AsyncTask<String, String, String> {
     	
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
+    		isCanceled = false;
     		mProgressDialog = new ProgressDialog(activity);
 			mProgressDialog.setMessage("Downloading file...");
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			mProgressDialog.setCancelable(false);
+			mProgressDialog.setCancelable(false);			
+			mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					Log.d(TAG, "!!! Cancel dialog");
+					isCanceled = true;
+					mProgressDialog.dismiss();	
+					CancelHandelr();
+				}
+			} );
 			mProgressDialog.show();
     		
     	}
@@ -196,12 +217,18 @@ public class Version extends CordovaPlugin {
     		int count;
     		
     	try {
-
+    		
+    		if(isCanceled == true){
+    			CancelHandelr();
+    			return null;
+    		}
+    		
 	    	URL url = new URL(aurl[0]  + aurl[1]);
 	    	
 	    	Log.d(TAG, "..! url Scheme url: " + url);
 	    	
 	    	URLConnection conexion = url.openConnection();
+	    	
 	    	conexion.connect();
 	
 	    	int lenghtOfFile = conexion.getContentLength();
@@ -228,7 +255,8 @@ public class Version extends CordovaPlugin {
 	    		
 	    		
     		
-    	} catch (Exception e) {}
+    	}
+    	catch (Exception e) {}
     	
     	
     	return null;
@@ -242,6 +270,14 @@ public class Version extends CordovaPlugin {
     	@Override
     	protected void onPostExecute(String unused) {
     		mProgressDialog.dismiss();
+    		
+    		if(isCanceled == true){
+    			CancelHandelr();
+    			return;
+    		}
+    			
+    		
+    		
     		UnzipUtility unzipper = new UnzipUtility();
     		 try {
 
@@ -523,12 +559,12 @@ public class Version extends CordovaPlugin {
 			if(remoteVersion != null && !currentVersion.equals(remoteVersion)){
 					
 			   
-			    ((CordovaApp) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
+			    ((UAR2015) activity).showConfirmDialogForUpdate(updateNote, currentVersion, remoteVersion);
 			}else if(!isBackground){
 				if(remoteVersion != null)
-					((CordovaApp) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
+					((UAR2015) activity).showConfirmDialogForUpdate("You have latest app version", null, null);
 				else 
-					((CordovaApp) activity).showConfirmDialogForUpdate("Can not get remote version", null, null);
+					((UAR2015) activity).showConfirmDialogForUpdate("Can not get remote version", null, null);
 			}
 			
         }
@@ -541,7 +577,7 @@ public class Version extends CordovaPlugin {
 	public boolean isOnline() { 
 		
 		if(this.activity ==  null)
-			this.activity = (CordovaApp)this.cordova.getActivity();
+			this.activity = (UAR2015)this.cordova.getActivity();
 		
         ConnectivityManager cm =
             (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -583,7 +619,7 @@ public class Version extends CordovaPlugin {
 	       version = version.replace("|",";");
 	       String[] arr =  version.split(";");
 	     
-	       if(arr.length == 4 || arr.length == 5) //fix for not free WiFi
+	       if(arr.length == 3 || arr.length == 4) //fix for not free WiFi
 	       {
 	    	    remoteVersion  = arr[0];
 	       		updateChecksum = arr[2].toUpperCase();
